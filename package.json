@@ -5,6 +5,8 @@
     "main": "src/index.html",
     "type": "module",
     "scripts": {
+        "dgt": "node --experimental-strip-types ./app/src/dgt.ts",
+        "node": "node --experimental-strip-types ./app/src/index.ts",
         "start": "vite dev --config vite.config.ts ",
         "build": "vite build --config vite.config.ts",
         "lint": "eslint --fix . && prettier --write .",
@@ -29,6 +31,8 @@
         "last 1 Firefox version"
     ],
     "dependencies": {
-        "dgtchess": "^1.0.1"
+        "dgtchess": "^1.0.1",
+        "node": "^22.14.0",
+        "serialport": "^9.2.8"
     }
 }

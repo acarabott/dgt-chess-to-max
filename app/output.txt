@@ -1,0 +1,1467 @@
+
+> chess@1.0.0 dgt
+> node --experimental-strip-types ./app/src/dgt.ts
+
+constructor ------------
+reset-----------------
+cmd: SendReset { code: 64, length: 0 }
+write ---------------------- [ Uint8Array(1) [ 64 ] ]
+cmd: ReturnSerialNr { code: 69, length: 8 }
+write ---------------------- [ Uint8Array(1) [ 69 ] ]
+[ 145, 0 ]
+[ 8, 50, 53, 56, 48, 53 ]
+cmd: ReturnVersion { code: 77, length: 5 }
+write ---------------------- [ Uint8Array(1) [ 77 ] ]
+[ 147 ]
+[ 0, 5, 3 ]
+[ 1 ]
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134 ]
+[ 0 ]
+[ 67 ]
+[ 8, 9 ]
+[ 10, 12, 11 ]
+[ 10 ]
+[ 9 ]
+[ 8 ]
+[ 7 ]
+[ 7 ]
+[ 7 ]
+[ 7 ]
+[ 7 ]
+[ 7, 7, 7, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0, 0, 0 ]
+[ 0 ]
+[ 0, 0, 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1, 1, 1, 2 ]
+[ 3 ]
+[ 4 ]
+[ 6 ]
+[ 5 ]
+[ 4 ]
+[ 3 ]
+[ 2 ]
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134 ]
+[ 0 ]
+[ 67 ]
+[ 8, 9 ]
+[ 10 ]
+[ 12 ]
+[ 11, 10 ]
+[ 9 ]
+[
+  8, 7, 7, 7,
+  7, 7, 7
+]
+[ 7, 7 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0, 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0, 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 1 ]
+[ 1 ]
+[ 1, 1, 1, 1, 1 ]
+[ 1 ]
+[ 2 ]
+[ 3 ]
+[ 4 ]
+[ 6 ]
+[ 5 ]
+[ 4 ]
+[ 3 ]
+[ 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0 ]
+[
+  67,  8,  9, 10,
+  12, 11, 10
+]
+[ 9, 8, 7, 7, 7, 7 ]
+[ 7, 7 ]
+[ 7, 7 ]
+[ 0, 0, 0, 0, 0 ]
+[ 0, 0, 0, 0, 0 ]
+[ 0 ]
+[ 0, 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0, 0, 0, 0, 0, 1 ]
+[ 1, 1 ]
+[ 1, 1 ]
+[ 1, 1 ]
+[ 1 ]
+[ 2, 3 ]
+[ 4, 6 ]
+[ 5, 4 ]
+[ 3 ]
+[ 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0, 67, 8 ]
+[
+  9, 10, 12, 11, 10, 9, 8, 7,
+  7,  7,  7,  7,  7, 7, 7, 0,
+  0,  0,  0,  0,  0, 0, 0, 0,
+  0,  0,  0
+]
+[
+  0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0,
+  0, 0, 0
+]
+[
+  0, 0, 0, 0,
+  0, 1, 1
+]
+[
+  1, 1, 1, 1,
+  1, 1, 2, 3
+]
+[ 4, 6, 5, 4, 3, 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0 ]
+[ 67, 8, 9, 10, 12 ]
+[ 11, 10 ]
+[ 9, 8 ]
+[ 7, 7 ]
+[ 7, 7 ]
+[ 7, 7 ]
+[ 7 ]
+[ 7 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0, 0, 0, 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0, 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 1 ]
+[ 2 ]
+[ 3 ]
+[ 4 ]
+[ 6 ]
+[ 5 ]
+[ 4, 3, 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0 ]
+[ 67, 8, 9, 10 ]
+[
+  12, 11, 10, 9,
+   8,  7,  7, 7
+]
+[ 7, 7, 7 ]
+[ 7, 7, 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0 ]
+[
+  0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0
+]
+[ 0, 0, 0 ]
+[ 0, 0, 0, 0 ]
+[ 0 ]
+[ 0, 0, 0 ]
+[ 1, 1 ]
+[ 1 ]
+[ 1, 1, 1, 1, 1, 2 ]
+[
+  3, 4, 6, 5,
+  4, 3, 2
+]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[
+  134,  0, 67,  8, 9,
+   10, 12, 11, 10, 9
+]
+[ 8, 7, 7, 7, 7 ]
+[ 7, 7, 7, 7 ]
+[
+  0, 0, 0, 0,
+  0, 0, 0, 0
+]
+[ 0, 0, 0, 0 ]
+[ 0, 0, 0 ]
+[ 0, 0, 0 ]
+[ 0, 0, 0 ]
+[ 0, 0, 0, 0, 0 ]
+[ 0, 0, 0 ]
+[ 0, 0, 0, 1 ]
+[ 1, 1, 1, 1 ]
+[ 1, 1 ]
+[ 1, 2, 3 ]
+[ 4 ]
+[ 6, 5, 4, 3, 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0, 67 ]
+[
+   8,  9, 10, 12,
+  11, 10,  9
+]
+[ 8, 7, 7, 7 ]
+[
+  7, 7, 7, 7, 7, 0,
+  0, 0, 0, 0, 0, 0,
+  0
+]
+[ 0, 0, 0, 0, 0 ]
+[ 0, 0, 0, 0, 0 ]
+[ 0, 0, 0, 0, 0, 0 ]
+[
+  0, 0, 0, 0,
+  0, 0, 0
+]
+[
+  0, 1, 1, 1, 1,
+  1, 1, 1, 1, 2
+]
+[
+  3, 4, 6, 5,
+  4, 3, 2
+]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134 ]
+[ 0, 67, 8, 9, 10, 12 ]
+[
+  11, 10, 9, 8, 7, 7, 7,
+   7,  7, 7, 7, 7, 0, 0,
+   0,  0, 0, 0, 0, 0, 0
+]
+[
+  0, 0, 0, 0, 0,
+  0, 0, 0, 0
+]
+[
+  0, 0, 0, 0, 0,
+  0, 0, 0, 0
+]
+[ 0, 0, 0 ]
+[ 0, 0, 1, 1, 1, 1 ]
+[ 1, 1, 1 ]
+[ 1, 2, 3, 4 ]
+[ 6, 5, 4, 3, 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0 ]
+[
+  67,  8,  9, 10,
+  12, 11, 10,  9
+]
+[ 8, 7, 7, 7 ]
+[ 7, 7, 7 ]
+[ 7, 7 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[
+  0, 0, 0, 0,
+  0, 0, 0
+]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0, 0, 0, 0, 0, 0 ]
+[ 0, 1 ]
+[ 1, 1 ]
+[ 1 ]
+[ 1, 1 ]
+[ 1 ]
+[ 1, 2 ]
+[ 3, 4 ]
+[ 6 ]
+[ 5 ]
+[ 4 ]
+[ 3, 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0 ]
+[
+  67,  8, 9, 10, 12,
+  11, 10, 9,  8
+]
+[ 7, 7, 7, 7 ]
+[ 7, 7 ]
+[ 7, 7 ]
+[ 0, 0 ]
+[ 0, 0 ]
+[ 0, 0, 0, 0, 0 ]
+[ 0, 0 ]
+[ 0, 0, 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0, 0, 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[
+  0, 0, 0, 0,
+  0, 0, 0
+]
+[ 1, 1 ]
+[ 1, 1 ]
+[ 1, 1, 1, 1, 2 ]
+[ 3, 4 ]
+[ 6, 5 ]
+[ 4, 3, 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0, 67 ]
+[ 8 ]
+[ 9 ]
+[ 10 ]
+[ 12 ]
+[ 11, 10 ]
+[ 9 ]
+[ 8 ]
+[ 7, 7, 7, 7, 7, 7 ]
+[ 7 ]
+[ 7 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0, 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[ 0, 1, 1, 1 ]
+[ 1 ]
+[ 1, 1 ]
+[ 1 ]
+[ 1 ]
+[ 2 ]
+[ 3 ]
+[ 4 ]
+[ 6 ]
+[ 5 ]
+[ 4 ]
+[ 3 ]
+[ 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[
+  134,  0, 67, 8,
+    9, 10, 12
+]
+[
+  11, 10, 9, 8, 7, 7, 7, 7, 7, 7, 7,
+   7,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   1,  1, 1, 1, 1
+]
+[
+  1, 1, 1, 2, 3,
+  4, 6, 5, 4, 3,
+  2
+]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0 ]
+[ 67, 8 ]
+[ 9, 10, 12, 11, 10, 9 ]
+[ 8, 7 ]
+[ 7, 7 ]
+[ 7, 7 ]
+[ 7 ]
+[ 7, 7 ]
+[ 0, 0 ]
+[ 0 ]
+[ 0 ]
+[
+  0, 0, 0, 0,
+  0, 0, 0, 0
+]
+[ 0 ]
+[
+  0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0
+]
+[ 0, 0 ]
+[ 0, 0, 0 ]
+[ 0 ]
+[
+  0, 0, 0, 1,
+  1, 1, 1
+]
+[ 1 ]
+[ 1, 1 ]
+[ 1, 2, 3 ]
+[ 4, 6 ]
+[ 5, 4 ]
+[ 3 ]
+[ 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
+getPosition ---------------------------
+cmd: SendBoard { code: 66, length: 67 }
+write ---------------------- [ Uint8Array(1) [ 66 ] ]
+[ 134, 0, 67, 8, 9 ]
+[ 10, 12, 11, 10 ]
+[ 9, 8, 7, 7 ]
+[
+  7, 7, 7, 7,
+  7, 7, 0, 0
+]
+[
+  0, 0, 0, 0,
+  0, 0, 0
+]
+[ 0, 0, 0 ]
+[ 0, 0, 0 ]
+[ 0, 0, 0, 0, 0, 0 ]
+[ 0, 0, 0, 0, 0, 0 ]
+[ 0, 0 ]
+[ 0, 0, 0 ]
+[ 1, 1 ]
+[ 1, 1 ]
+[ 1, 1 ]
+[
+  1, 1, 2, 3,
+  4, 6, 5, 4
+]
+[ 3, 2 ]
+Position(64) [Map] {
+  'a8' => { role: 'rook', color: 'black' },
+  'b8' => { role: 'knight', color: 'black' },
+  'c8' => { role: 'bishop', color: 'black' },
+  'd8' => { role: 'queen', color: 'black' },
+  'e8' => { role: 'king', color: 'black' },
+  'f8' => { role: 'bishop', color: 'black' },
+  'g8' => { role: 'knight', color: 'black' },
+  'h8' => { role: 'rook', color: 'black' },
+  'a7' => { role: 'pawn', color: 'black' },
+  'b7' => { role: 'pawn', color: 'black' },
+  'c7' => { role: 'pawn', color: 'black' },
+  'd7' => { role: 'pawn', color: 'black' },
+  'e7' => { role: 'pawn', color: 'black' },
+  'f7' => { role: 'pawn', color: 'black' },
+  'g7' => { role: 'pawn', color: 'black' },
+  'h7' => { role: 'pawn', color: 'black' },
+  'a6' => null,
+  'b6' => null,
+  'c6' => null,
+  'd6' => null,
+  'e6' => null,
+  'f6' => null,
+  'g6' => null,
+  'h6' => null,
+  'a5' => null,
+  'b5' => null,
+  'c5' => null,
+  'd5' => null,
+  'e5' => null,
+  'f5' => null,
+  'g5' => null,
+  'h5' => null,
+  'a4' => null,
+  'b4' => null,
+  'c4' => null,
+  'd4' => null,
+  'e4' => null,
+  'f4' => null,
+  'g4' => null,
+  'h4' => null,
+  'a3' => null,
+  'b3' => null,
+  'c3' => null,
+  'd3' => null,
+  'e3' => null,
+  'f3' => null,
+  'g3' => null,
+  'h3' => null,
+  'a2' => { role: 'pawn', color: 'white' },
+  'b2' => { role: 'pawn', color: 'white' },
+  'c2' => { role: 'pawn', color: 'white' },
+  'd2' => { role: 'pawn', color: 'white' },
+  'e2' => { role: 'pawn', color: 'white' },
+  'f2' => { role: 'pawn', color: 'white' },
+  'g2' => { role: 'pawn', color: 'white' },
+  'h2' => { role: 'pawn', color: 'white' },
+  'a1' => { role: 'rook', color: 'white' },
+  'b1' => { role: 'knight', color: 'white' },
+  'c1' => { role: 'bishop', color: 'white' },
+  'd1' => { role: 'queen', color: 'white' },
+  'e1' => { role: 'king', color: 'white' },
+  'f1' => { role: 'bishop', color: 'white' },
+  'g1' => { role: 'knight', color: 'white' },
+  'h1' => { role: 'rook', color: 'white' }
+}
