@@ -2,6 +2,13 @@ import type { Piece, Square } from "chess.js";
 import { Chess, SQUARES } from "chess.js";
 import { kTestSequence } from "./testSequence";
 
+/* 
+TODO take moves one at a time
+TODO buffering values until message is complete (or use DGT library)
+TODO sending messages to MAX
+ 
+*/
+
 enum DGTChessPiece {
     None = 0x0,
     WhitePawn = 0x1,
