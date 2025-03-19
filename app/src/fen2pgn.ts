@@ -13,7 +13,7 @@ export const fenToData = function (fen: string | undefined): Data | undefined {
     try {
         const fields = fen.split(" ");
         return {
-            place: fields[0].replace(/[1-8]/g, (n) => " ".repeat(n)).split("/"),
+            place: fields[0].replace(/[1-8]/g, (n) => " ".repeat(parseInt(n, 10))).split("/"),
             color: fields[1],
             fullMoveNumber: +fields[5],
         };
@@ -21,6 +21,7 @@ export const fenToData = function (fen: string | undefined): Data | undefined {
         throw new Error("Wrong fen:" + fen + "\nError:" + err);
     }
 };
+
 export const fenToPgn = function (fens: string[]) {
     if (fens.length < 2) {
         return "";
@@ -34,16 +35,21 @@ export const fenToPgn = function (fens: string[]) {
     if (previousFen === undefined) {
         return;
     }
-    const previous = fenToData(previousFen);
+    let previous = fenToData(previousFen);
     if (previous === undefined) {
         return;
     }
 
     let current: Data | undefined;
     pgn += `${previous.fullMoveNumber}. ${previous.color === "b" ? ".. " : ""}`;
+
+    interface Position {
+        r: number;
+        f: number;
+    }
     while ((current = fenToData(fens.shift()))) {
-        const removes = {};
-        const adds = {};
+        const removes: Record<string, Position> = {};
+        const adds: Record<string, Position> = {};
         for (let r = 0; r < 8; r++) {
             for (let f = 0; f < 8; f++) {
                 if (previous.place[r][f] === current.place[r][f]) {
@@ -84,7 +90,7 @@ export const fenToPgn = function (fens: string[]) {
         pgn +=
             previous.fullMoveNumber === current.fullMoveNumber
                 ? " "
-                : "\n" + (fens.length ? current.fullMoveNumber + "." : "");
+                : "\n" + (fens.length ? `${current.fullMoveNumber}.` : "");
         previous = current;
     }
     return pgn;
