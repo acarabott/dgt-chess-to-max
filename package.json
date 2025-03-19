@@ -5,8 +5,9 @@
     "main": "src/index.html",
     "type": "module",
     "scripts": {
+        "node": "tsx",
         "dgt": "node --experimental-strip-types ./app/src/dgt.ts",
-        "node": "node --experimental-strip-types ./app/src/index.ts",
+        "index": "node --experimental-strip-types ./app/src/index.ts",
         "start": "vite dev --config vite.config.ts ",
         "build": "vite build --config vite.config.ts",
         "lint": "eslint --fix . && prettier --write .",
@@ -20,6 +21,7 @@
         "eslint-plugin-eslint-comments": "^3.2.0",
         "eslint-plugin-import": "^2.29.1",
         "prettier": "^3.3.2",
+        "tsx": "^4.19.3",
         "typescript": "^5.5.2",
         "typescript-eslint": "^7.14.1",
         "vite": "^5.3.2",
@@ -31,6 +33,7 @@
         "last 1 Firefox version"
     ],
     "dependencies": {
+        "chess.js": "^1.1.0",
         "dgtchess": "^1.0.1",
         "node": "^22.14.0",
         "serialport": "^9.2.8"
