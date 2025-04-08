@@ -22,36 +22,46 @@ const main = () => {
 
     const fens: string[] = [];
 
-    setInterval(() => {
-        boardSimulator
-            .getPosition()
-            .then((position) => {
-                const { ascii, fen } = parseBoardMessage(position);
-                ui.updateBoard(ascii, "");
-                if (ascii === kInitialAscii) {
-                    // checking ASCII here, not FEN because FEN can have some slight variations
-                    // depending on how it was generated (from initial board state or iniitial Chess)
-                    return;
-                }
+    const tick = async () => {
+        setTimeout(() => void tick(), pollInterval_ms);
 
-                const previousFen = fens[fens.length - 1];
-                if (fen !== previousFen) {
-                    fens.push(fen);
-                }
+        let message: Uint8Array;
+        try {
+            message = await boardSimulator.getPosition();
+        } catch (error: unknown) {
+            // eslint-disable-next-line no-console
+            console.error("Error getting position from board:", error);
+            return;
+        }
 
-                const pgn = createPGN(fens);
-                if (pgn.length > 0) {
-                    sendPGN(pgn).catch((error: unknown) => {
-                        // eslint-disable-next-line no-console
-                        console.error("Error sending PGN:", error);
-                    });
-                }
-            })
-            .catch((error: unknown) => {
-                // eslint-disable-next-line no-console
-                console.error("Error getting position from board:", error);
-            });
-    }, pollInterval_ms);
+        const { ascii, fen } = parseBoardMessage(message);
+        ui.updateBoard(ascii, "");
+        if (ascii === kInitialAscii) {
+            // checking ASCII here, not FEN because FEN can have some slight variations
+            // depending on how it was generated (from initial board state or iniitial Chess)
+            return;
+        }
+
+        const previousFen = fens[fens.length - 1];
+        if (fen === previousFen) {
+            return;
+        }
+
+        fens.push(fen);
+        const pgn = createPGN(fens);
+        if (pgn.length === 0) {
+            return;
+        }
+
+        try {
+            await sendPGN(pgn);
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error("Error sending PGN:", error);
+        }
+    };
+
+    void tick();
 };
 
 if (document.readyState === "loading") {
