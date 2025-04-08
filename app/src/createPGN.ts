@@ -22,6 +22,7 @@ export const createPGN = (fens: readonly string[]) => {
             throw new Error("couldn't find move for fen");
         }
         game.move(move);
-        // addViz(fen, game, "")
     }
+
+    return game.pgn();
 };

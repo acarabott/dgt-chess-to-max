@@ -3,6 +3,14 @@ import { SQUARES, Chess } from "chess.js";
 import type { DGTChessPiece } from "./api";
 import { parseDGTPiece } from "./parseDGTPiece";
 
+/**
+ * Parses a message from the DGT board and returns a FEN string representing the position on the board.
+ * The message is expected to be a Uint8Array with the first 3 bytes being a header.
+ * The remaining bytes represent the pieces on the board in a specific order.
+ * Each byte corresponds to a square on the board, and the value of the byte indicates the piece on that square.
+ * @param message - the message from the DGT board
+ * @returns a FEN string representing the position on the board
+ */
 export const parseBoardMessage = (message: Uint8Array) => {
     const encoded = message.slice(3);
 
