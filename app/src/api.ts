@@ -1,0 +1,15 @@
+export enum DGTChessPiece {
+    None = 0x0,
+    WhitePawn = 0x1,
+    WhiteRook = 0x2,
+    WhiteKnight = 0x3,
+    WhiteBishop = 0x4,
+    WhiteKing = 0x5,
+    WhiteQueen = 0x6,
+    BlackPawn = 0x7,
+    BlackRook = 0x8,
+    BlackKnight = 0x9,
+    BlackBishop = 0xa,
+    BlackKing = 0xb,
+    BlackQueen = 0xc,
+}
