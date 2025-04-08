@@ -5,7 +5,7 @@ export const createBoardSimulator = () => {
 
     setInterval(() => {
         index = Math.min(index + 1, kTestSequence.length - 1);
-    }, 1000 * 5);
+    }, 1000 * 3);
 
     return {
         getPosition: (): Promise<Uint8Array> => {

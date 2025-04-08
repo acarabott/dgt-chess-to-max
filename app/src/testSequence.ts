@@ -8,7 +8,6 @@ const moves = pgn
     .split("  ")[0]
     .split(" ")
     .map((move) => move.replace(/[0-9]+\./, ""));
-const game = new Chess();
 
 const pieceToDGT = (piece: Readonly<Piece> | null): number => {
     let value = 0;
@@ -47,11 +46,21 @@ const pieceToDGT = (piece: Readonly<Piece> | null): number => {
     return value;
 };
 
-export const kTestSequence = moves.map((move) => {
-    game.move(move);
+export const createMessage = (game: Chess) => {
     const board = game.board();
     const header = [134, 0, 67];
     const state = board.flatMap((rank) => rank.flatMap(pieceToDGT));
     const message = new Uint8Array([...header, ...state]);
     return message;
-});
+};
+
+export const kTestSequence = (() => {
+    const game = new Chess();
+    const firstMessage = createMessage(game);
+    const moveMessages = moves.map((move) => {
+        game.move(move);
+        return createMessage(game);
+    });
+    const sequence = [firstMessage, ...moveMessages];
+    return sequence;
+})();

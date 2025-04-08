@@ -3,6 +3,8 @@ import { SQUARES, Chess } from "chess.js";
 import type { DGTChessPiece } from "./api";
 import { parseDGTPiece } from "./parseDGTPiece";
 
+// TODO this could take the current PGN and initialize the game from that, would mean that FEN would have the correct turns
+
 /**
  * Parses a message from the DGT board and returns a FEN string representing the position on the board.
  * The message is expected to be a Uint8Array with the first 3 bytes being a header.
@@ -31,6 +33,7 @@ export const parseBoardMessage = (message: Uint8Array) => {
     }
 
     const fen = chess.fen();
+    const ascii = chess.ascii();
 
-    return fen;
+    return { fen, ascii };
 };
