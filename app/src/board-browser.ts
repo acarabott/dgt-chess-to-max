@@ -1,15 +1,17 @@
 /* eslint-disable no-console */
 
+import type { DGTBoard } from "./api";
 import {
     DGTMessageCode,
+    kDGTMessageBufferLength,
     kDGTMessageLengthBoard,
-    kDGTMessageHeaderLength,
     kDGTMessageLengthSerialNumber,
     kDGTMessageLengthVersion,
 } from "./api";
+import { parseSerialNumberMessage, parseVersionMessage } from "./board-shared";
 
 const createTransformer = () => {
-    const inputBuffer = new Uint8Array(5);
+    const inputBuffer = new Uint8Array(kDGTMessageBufferLength);
     let inputBufferIndex = 0;
 
     const transformer = new TransformStream<Uint8Array, Uint8Array>({
@@ -36,7 +38,7 @@ const createTransformer = () => {
     return transformer;
 };
 
-export class BoardBrowser {
+export class BoardBrowser implements DGTBoard {
     port: SerialPort;
     msgFieldUpdateTransformer = createTransformer();
 
@@ -44,7 +46,7 @@ export class BoardBrowser {
         this.port = port;
     }
 
-    async reset() {
+    async reset(): Promise<boolean> {
         return this.write(DGTMessageCode.SendReset);
     }
 
@@ -69,11 +71,11 @@ export class BoardBrowser {
             return;
         }
 
-        const decoder = new TextDecoder("utf-8");
-        return decoder.decode(message.slice(kDGTMessageHeaderLength));
+        const parsed = parseSerialNumberMessage(message);
+        return parsed;
     }
 
-    async getVersion() {
+    async getVersion(): Promise<string | undefined> {
         const didWrite = await this.write(DGTMessageCode.GetVersion);
         if (!didWrite) {
             return;
@@ -83,18 +85,11 @@ export class BoardBrowser {
         if (message === undefined) {
             return;
         }
-        const major = message[3];
-        const minor = message[4];
-        const version = `${major}.${minor}`;
-        return version;
+        const parsed = parseVersionMessage(message);
+        return parsed;
     }
 
     async write(messageCode: DGTMessageCode): Promise<boolean> {
-        if (this.port.writable === null) {
-            console.error("port is not writable");
-            return false;
-        }
-
         try {
             await this.port.writable.getWriter().write(new Uint8Array([messageCode]));
             return true;
@@ -105,11 +100,6 @@ export class BoardBrowser {
     }
 
     async read(messageLength: number): Promise<Uint8Array | undefined> {
-        if (this.port.readable === null) {
-            console.error("port is not readable");
-            return undefined;
-        }
-
         const didWrite = await this.write(DGTMessageCode.SendUpdateBoard);
         if (!didWrite) {
             console.error("Failed to write update message to port");

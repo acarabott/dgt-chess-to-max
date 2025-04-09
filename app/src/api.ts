@@ -1,3 +1,10 @@
+export interface DGTBoard {
+    reset(): Promise<boolean>;
+    getBoardState(): Promise<Uint8Array | undefined>;
+    getSerialNumber(): Promise<string | undefined>;
+    getVersion(): Promise<string | undefined>;
+}
+
 export enum DGTChessPiece {
     None = 0x0,
     WhitePawn = 0x1,
@@ -26,3 +33,5 @@ export const kDGTMessageHeaderLength = 3;
 export const kDGTMessageLengthBoard = kDGTMessageHeaderLength + 64;
 export const kDGTMessageLengthSerialNumber = kDGTMessageHeaderLength + 5;
 export const kDGTMessageLengthVersion = kDGTMessageHeaderLength + 2;
+
+export const kDGTMessageBufferLength = 5;
