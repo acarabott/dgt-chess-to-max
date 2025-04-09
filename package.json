@@ -35,8 +35,7 @@
     ],
     "dependencies": {
         "chess.js": "^1.1.0",
-        "dgtchess": "^1.0.1",
         "node": "^22.14.0",
-        "serialport": "^9.2.8"
+        "serialport": "^13.0.0"
     }
 }

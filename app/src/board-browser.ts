@@ -148,4 +148,8 @@ export class BoardBrowser implements DGTBoard {
 
         return message;
     }
+
+    async close(): Promise<void> {
+        await this.port.close();
+    }
 }

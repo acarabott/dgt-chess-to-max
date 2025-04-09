@@ -3,6 +3,7 @@ export interface DGTBoard {
     getBoardState(): Promise<Uint8Array | undefined>;
     getSerialNumber(): Promise<string | undefined>;
     getVersion(): Promise<string | undefined>;
+    close(): Promise<void>
 }
 
 export enum DGTChessPiece {
