@@ -52,7 +52,7 @@ const main = () => {
         }
 
         try {
-            await sendPGN(pgn);
+            sendPGN(pgn);
         } catch (error) {
             // eslint-disable-next-line no-console
             console.error("Error sending PGN:", error);
