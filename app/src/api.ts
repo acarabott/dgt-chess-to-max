@@ -13,3 +13,16 @@ export enum DGTChessPiece {
     BlackKing = 0xb,
     BlackQueen = 0xc,
 }
+
+export enum DGTMessageCode {
+    SendReset = 0x40,
+    SendUpdateBoard = 0x44,
+    GetBoardState = 0x42,
+    GetSerialNumber = 0x45,
+    GetVersion = 0x4d,
+}
+
+export const kDGTMessageHeaderLength = 3;
+export const kDGTMessageLengthBoard = kDGTMessageHeaderLength + 64;
+export const kDGTMessageLengthSerialNumber = kDGTMessageHeaderLength + 5;
+export const kDGTMessageLengthVersion = kDGTMessageHeaderLength + 2;

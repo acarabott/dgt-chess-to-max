@@ -1,16 +1,12 @@
 /* eslint-disable no-console */
-export enum MessageCode {
-    SendReset = 0x40,
-    SendUpdateBoard = 0x44,
-    GetBoardState = 0x42,
-    GetSerialNumber = 0x45,
-    GetVersion = 0x4d,
-}
 
-const kMessageHeaderLength = 3;
-const kBoardMessageLength = kMessageHeaderLength + 64;
-const kMessageLengthSerialNumber = kMessageHeaderLength + 5;
-const kMessageLengthVersion = kMessageHeaderLength + 2;
+import {
+    DGTMessageCode,
+    kDGTMessageLengthBoard,
+    kDGTMessageHeaderLength,
+    kDGTMessageLengthSerialNumber,
+    kDGTMessageLengthVersion,
+} from "./api";
 
 const createTransformer = () => {
     const inputBuffer = new Uint8Array(5);
@@ -49,41 +45,41 @@ export class BoardBrowser {
     }
 
     async reset() {
-        return this.write(MessageCode.SendReset);
+        return this.write(DGTMessageCode.SendReset);
     }
 
     async getBoardState(): Promise<Uint8Array | undefined> {
-        const didWrite = await this.write(MessageCode.GetBoardState);
+        const didWrite = await this.write(DGTMessageCode.GetBoardState);
         if (!didWrite) {
             return;
         }
 
-        const boardState = await this.read(kBoardMessageLength);
+        const boardState = await this.read(kDGTMessageLengthBoard);
         return boardState;
     }
 
     async getSerialNumber(): Promise<string | undefined> {
-        const didWrite = await this.write(MessageCode.GetSerialNumber);
+        const didWrite = await this.write(DGTMessageCode.GetSerialNumber);
         if (!didWrite) {
             return;
         }
 
-        const message = await this.read(kMessageLengthSerialNumber);
+        const message = await this.read(kDGTMessageLengthSerialNumber);
         if (message === undefined) {
             return;
         }
 
         const decoder = new TextDecoder("utf-8");
-        return decoder.decode(message.slice(kMessageHeaderLength));
+        return decoder.decode(message.slice(kDGTMessageHeaderLength));
     }
 
     async getVersion() {
-        const didWrite = await this.write(MessageCode.GetVersion);
+        const didWrite = await this.write(DGTMessageCode.GetVersion);
         if (!didWrite) {
             return;
         }
 
-        const message = await this.read(kMessageLengthVersion);
+        const message = await this.read(kDGTMessageLengthVersion);
         if (message === undefined) {
             return;
         }
@@ -93,7 +89,7 @@ export class BoardBrowser {
         return version;
     }
 
-    async write(messageCode: MessageCode): Promise<boolean> {
+    async write(messageCode: DGTMessageCode): Promise<boolean> {
         if (this.port.writable === null) {
             console.error("port is not writable");
             return false;
@@ -114,7 +110,7 @@ export class BoardBrowser {
             return undefined;
         }
 
-        const didWrite = await this.write(MessageCode.SendUpdateBoard);
+        const didWrite = await this.write(DGTMessageCode.SendUpdateBoard);
         if (!didWrite) {
             console.error("Failed to write update message to port");
             return undefined;
