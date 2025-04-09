@@ -8,7 +8,7 @@ export const createBoardSimulator = () => {
     }, 1000 * 3);
 
     return {
-        getPosition: (): Promise<Uint8Array> => {
+        getBoardState: (): Promise<Uint8Array> => {
             return new Promise((resolve) => resolve(kTestSequence[index]));
         },
     };

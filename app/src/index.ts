@@ -6,8 +6,6 @@ import { createUI } from "./ui";
 import { kInitialAscii } from "./kInitialAscii";
 
 /* 
-TODO might need to handle messages from board coming in fragmented
-TODO buffering values until message is complete (or use DGT library)
 TODO sending messages to MAX
 TODO error handling in `createPGN`
 */
@@ -25,16 +23,16 @@ const main = () => {
     const tick = async () => {
         setTimeout(() => void tick(), pollInterval_ms);
 
-        let message: Uint8Array;
+        let boardState: Uint8Array;
         try {
-            message = await boardSimulator.getPosition();
+            boardState = await boardSimulator.getBoardState();
         } catch (error: unknown) {
             // eslint-disable-next-line no-console
             console.error("Error getting position from board:", error);
             return;
         }
 
-        const { ascii, fen } = parseBoardMessage(message);
+        const { ascii, fen } = parseBoardMessage(boardState);
         ui.updateBoard(ascii, "");
         if (ascii === kInitialAscii) {
             // checking ASCII here, not FEN because FEN can have some slight variations
