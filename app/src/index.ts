@@ -7,9 +7,7 @@ import { setupCommunication } from "./communication";
 import type { AppContext } from "./api";
 
 /*
-TODO might need to handle messages from board coming in fragmented
 TODO buffering values until message is complete (or use DGT library)
-TODO sending messages to MAX
 TODO error handling in `createPGN`
 */
 
