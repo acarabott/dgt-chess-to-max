@@ -68,3 +68,8 @@ export interface AppContext {
     max: Max;
     dgt: DGT;
 }
+
+export const kDGTFilter: SerialPortFilter = {
+    usbVendorId: 1240,
+    usbProductId: 10,
+};

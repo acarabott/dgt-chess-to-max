@@ -1,5 +1,5 @@
 import * as Xebra from "xebra.js";
-import { Signal } from "./signal";
+import { Signal } from "./Signal";
 import type { Max, MaxMessage } from "./api";
 import { MaxConnectionStatus } from "./api";
 

@@ -2,6 +2,20 @@ import type { AppContext } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { prettyPrint } from "./prettyPrint";
 
+export const createSetupUI = (onStart: () => void) => {
+    const el = document.createElement("div");
+    const startEl = document.createElement("button");
+    startEl.textContent = "Start";
+    startEl.addEventListener("click", () => {
+        onStart();
+    });
+    el.appendChild(startEl);
+
+    return {
+        el,
+    };
+};
+
 const getConnectionStatusText = (status: MaxConnectionStatus) => {
     switch (status) {
         case MaxConnectionStatus.Init:
@@ -19,7 +33,7 @@ const getConnectionStatusText = (status: MaxConnectionStatus) => {
     }
 };
 
-export const createUI = (context: AppContext) => {
+export const createChessUI = (context: AppContext) => {
     const containerEl = document.createElement("div");
 
     const boardEl = document.createElement("textarea");

@@ -1,13 +1,18 @@
+import { Board } from "../dgt/Board";
+import type { DGT } from "./api";
 import { createBoardSimulator } from "./boardSimulator";
 import { createPGN } from "./createPGN";
 import { kInitialAscii } from "./kInitialAscii";
 import { parseBoardMessage } from "./parseBoardMessage";
-import { Signal } from "./signal";
+import { Signal } from "./Signal";
 
-export const setupBoard = (_isMock: boolean) => {
+export const setupBoard = async (serialPort: SerialPort | undefined): Promise<DGT> => {
     const pollInterval_ms = 100;
 
-    const board = createBoardSimulator();
+    const board = serialPort === undefined ? createBoardSimulator() : new Board(serialPort);
+
+    await board.reset();
+
     const asciiSignal = new Signal<string>();
     const pgnSignal = new Signal<string>();
 
@@ -16,9 +21,12 @@ export const setupBoard = (_isMock: boolean) => {
     const tick = async () => {
         setTimeout(() => void tick(), pollInterval_ms);
 
-        let boardState: Uint8Array;
+        let boardState: Uint8Array | undefined;
         try {
             boardState = await board.getBoardState();
+            if (boardState === undefined) {
+                return;
+            }
         } catch (error: unknown) {
             // eslint-disable-next-line no-console
             console.error("Error getting position from board:", error);
