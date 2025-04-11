@@ -44,20 +44,23 @@ export const setupCommunication = () => {
         statusSignal.notify(status);
     });
 
-    xebraState.connect();
-
-    const messageQueue: string[] = [];
+    const pgnQueue: string[] = [];
     const sendPGN = (pgn: string) => {
-        messageQueue.push(pgn);
+        pgnQueue.push(pgn);
 
         if (xebraState.connectionState !== Xebra.CONNECTION_STATES.CONNECTED) {
             return;
         }
 
-        while (messageQueue.length > 0) {
-            const message = messageQueue.shift();
-            if (message !== undefined) {
-                xebraState.sendMessageToChannel("pgn", message);
+        while (pgnQueue.length > 0) {
+            const pgnMessage = pgnQueue.shift();
+            if (pgnMessage !== undefined) {
+                const message = {
+                    pgn: pgnMessage,
+                    timestamp: Date.now(),
+                };
+                const serialized = JSON.stringify(message);
+                xebraState.sendMessageToChannel("pgn", serialized);
             }
         }
     };
@@ -65,6 +68,8 @@ export const setupCommunication = () => {
     const getStatus = () => {
         return connectionStatus;
     };
+
+    xebraState.connect();
 
     return {
         sendPGN,
