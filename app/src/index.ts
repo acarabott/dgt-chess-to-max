@@ -3,7 +3,7 @@ import { createPGN } from "./createPGN";
 import { createBoardSimulator } from "./boardSimulator";
 import { createUI } from "./ui";
 import { kInitialAscii } from "./kInitialAscii";
-import { setupCommunication } from "./communication";
+import { setupCommunication } from "./max-communication";
 import type { AppContext } from "./api";
 
 /*
