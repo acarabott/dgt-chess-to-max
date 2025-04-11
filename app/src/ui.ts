@@ -32,9 +32,9 @@ export const createUI = (context: AppContext) => {
         boardEl.style.fontSize = "30px";
     }
 
-    const updateBoard = (ascii: string, pgn: string) => {
-        boardEl.value = `${prettyPrint(ascii)}\n\n${pgn}`;
-    };
+    context.dgt.asciiSignal.listen((ascii) => {
+        boardEl.value = prettyPrint(ascii);
+    });
 
     const connectionEl = document.createElement("div");
     containerEl.appendChild(connectionEl);
@@ -49,6 +49,5 @@ export const createUI = (context: AppContext) => {
 
     return {
         el: containerEl,
-        updateBoard,
     };
 };

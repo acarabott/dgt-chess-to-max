@@ -1,15 +1,16 @@
 import * as Xebra from "xebra.js";
 import { Signal } from "./signal";
+import type { Max, MaxMessage } from "./api";
 import { MaxConnectionStatus } from "./api";
 
-export const setupCommunication = () => {
+export const setupMax = (): Max => {
     const xebraState = new Xebra.State({
         hostname: "127.0.0.1",
         port: 8086,
     });
 
     let connectionStatus = MaxConnectionStatus.Init;
-    const statusSignal = new Signal<MaxConnectionStatus>();
+    const connectionStatusSignal = new Signal<MaxConnectionStatus>();
 
     xebraState.on("connection_changed", (newState) => {
         const status: MaxConnectionStatus = (() => {
@@ -41,39 +42,35 @@ export const setupCommunication = () => {
             }
         })();
         connectionStatus = status;
-        statusSignal.notify(status);
+        connectionStatusSignal.notify(status);
     });
 
-    const pgnQueue: string[] = [];
-    const sendPGN = (pgn: string) => {
-        pgnQueue.push(pgn);
+    const messageQueue: Readonly<MaxMessage>[] = [];
+    const sendMessage = (message: MaxMessage) => {
+        messageQueue.push(message);
 
         if (xebraState.connectionState !== Xebra.CONNECTION_STATES.CONNECTED) {
             return;
         }
 
-        while (pgnQueue.length > 0) {
-            const pgnMessage = pgnQueue.shift();
-            if (pgnMessage !== undefined) {
-                const message = {
-                    pgn: pgnMessage,
-                    timestamp: Date.now(),
-                };
+        while (messageQueue.length > 0) {
+            const queueMessage = messageQueue.shift();
+            if (queueMessage !== undefined) {
                 const serialized = JSON.stringify(message);
                 xebraState.sendMessageToChannel("pgn", serialized);
             }
         }
     };
 
-    const getStatus = () => {
+    const getConnectionStatus = () => {
         return connectionStatus;
     };
 
     xebraState.connect();
 
     return {
-        sendPGN,
-        getStatus,
-        statusSignal,
+        sendMessage,
+        getConnectionStatus,
+        connectionStatusSignal,
     };
 };
