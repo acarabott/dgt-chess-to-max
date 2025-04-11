@@ -1,11 +1,59 @@
 import { parseBoardMessage } from "./parseBoardMessage";
 import { createPGN } from "./createPGN";
 import { createBoardSimulator } from "./boardSimulator";
-import { sendPGN } from "./sendPGN";
 import { createUI } from "./ui";
 import { kInitialAscii } from "./kInitialAscii";
+import * as Xebra from "xebra.js";
 
-/* 
+const xebraState = new Xebra.State({
+    hostname: "127.0.0.1",
+    port: 8086,
+});
+
+const sendPGN = (pgn: string) => {
+    if (xebraState.connectionState !== Xebra.CONNECTION_STATES.CONNECTED) {
+        console.error("could not send pgn, not connected to Max patch");
+        return;
+    }
+    xebraState.sendMessageToChannel("pgn", pgn);
+};
+xebraState.on("connection_changed", (connectionState) => {
+    switch (connectionState) {
+        case Xebra.CONNECTION_STATES.INIT: {
+            console.log("init");
+            break;
+        }
+        case Xebra.CONNECTION_STATES.CONNECTING: {
+            console.log("conneting");
+            break;
+        }
+        case Xebra.CONNECTION_STATES.CONNECTED: {
+            console.log("connected");
+            break;
+        }
+        case Xebra.CONNECTION_STATES.CONNECTION_FAIL: {
+            console.log("CONNECTION_FAIL");
+            break;
+        }
+        case Xebra.CONNECTION_STATES.RECONNECTING: {
+            console.log("RECONNECTING");
+            break;
+        }
+        case Xebra.CONNECTION_STATES.DISCONNECTED: {
+            console.log("DISCONNECTED");
+            break;
+        }
+        default: {
+            throw new Error("default case");
+        }
+    }
+});
+
+xebraState.connect();
+
+/*
+TODO might need to handle messages from board coming in fragmented
+TODO buffering values until message is complete (or use DGT library)
 TODO sending messages to MAX
 TODO error handling in `createPGN`
 */
