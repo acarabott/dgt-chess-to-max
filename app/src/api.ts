@@ -1,4 +1,4 @@
-import type { Signal } from "./signal";
+import type { Signal } from "./Signal";
 
 export interface DGTBoard {
     reset(): Promise<boolean>;

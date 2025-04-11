@@ -6,22 +6,27 @@ import { setupBoard } from "./setupBoard";
 /*
 TODO buffering values until message is complete (or use DGT library)
 TODO error handling in `createPGN`
+TODO keyboard handling
+TODO web server startup
+TODO deploy to website
+TODO make UI nice
 */
 
+const context: AppContext = {
+    max: setupMax(),
+    dgt: setupBoard(true),
+};
+
+context.dgt.pgnSignal.listen((pgn) => {
+    context.max.sendMessage({
+        pgn,
+        timestamp: Date.now(),
+    });
+});
+
 const main = () => {
-    const context: AppContext = {
-        max: setupMax(),
-        dgt: setupBoard(true),
-    };
     const ui = createUI(context);
     document.body.appendChild(ui.el);
-
-    context.dgt.pgnSignal.listen((pgn) => {
-        context.max.sendMessage({
-            pgn,
-            timestamp: Date.now(),
-        });
-    });
 };
 
 if (document.readyState === "loading") {
