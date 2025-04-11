@@ -11,15 +11,17 @@ TODO buffering values until message is complete (or use DGT library)
 TODO error handling in `createPGN`
 */
 
-const boardSimulator = createBoardSimulator();
+const board = createBoardSimulator();
 const pollInterval_ms = 100;
 
 const communication = setupCommunication();
 
 const main = () => {
     const context: AppContext = {
-        connectionStatusSignal: communication.statusSignal,
-        getConnectionStatus: communication.getStatus,
+        max: {
+            connectionStatusSignal: communication.statusSignal,
+            getConnectionStatus: communication.getStatus,
+        },
     };
     const ui = createUI(context);
     document.body.appendChild(ui.el);
@@ -31,7 +33,7 @@ const main = () => {
 
         let boardState: Uint8Array;
         try {
-            boardState = await boardSimulator.getBoardState();
+            boardState = await board.getBoardState();
         } catch (error: unknown) {
             // eslint-disable-next-line no-console
             console.error("Error getting position from board:", error);

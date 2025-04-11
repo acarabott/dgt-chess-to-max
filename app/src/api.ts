@@ -49,6 +49,8 @@ export enum MaxConnectionStatus {
 }
 
 export interface AppContext {
-    getConnectionStatus: () => MaxConnectionStatus;
-    connectionStatusSignal: Signal<MaxConnectionStatus>;
+    max: {
+        getConnectionStatus: () => MaxConnectionStatus;
+        connectionStatusSignal: Signal<MaxConnectionStatus>;
+    };
 }

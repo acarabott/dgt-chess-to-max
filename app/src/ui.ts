@@ -41,9 +41,9 @@ export const createUI = (context: AppContext) => {
     const updateConnectionEl = (status: MaxConnectionStatus) => {
         connectionEl.textContent = getConnectionStatusText(status);
     };
-    updateConnectionEl(context.getConnectionStatus());
+    updateConnectionEl(context.max.getConnectionStatus());
 
-    context.connectionStatusSignal.listen((status) => {
+    context.max.connectionStatusSignal.listen((status) => {
         updateConnectionEl(status);
     });
 
