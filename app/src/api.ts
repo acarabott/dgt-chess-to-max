@@ -1,9 +1,11 @@
+import type { Signal } from "./signal";
+
 export interface DGTBoard {
     reset(): Promise<boolean>;
     getBoardState(): Promise<Uint8Array | undefined>;
     getSerialNumber(): Promise<string | undefined>;
     getVersion(): Promise<string | undefined>;
-    close(): Promise<void>
+    close(): Promise<void>;
 }
 
 export enum DGTChessPiece {
@@ -36,3 +38,17 @@ export const kDGTMessageLengthSerialNumber = kDGTMessageHeaderLength + 5;
 export const kDGTMessageLengthVersion = kDGTMessageHeaderLength + 2;
 
 export const kDGTMessageBufferLength = 5;
+
+export enum MaxConnectionStatus {
+    Init = "Init",
+    Connecting = "Connecting",
+    Connected = "Connected",
+    ConnectionFailed = "ConnectionFailed",
+    Reconnecting = "Reconnecting",
+    Disconnected = "Disconnected",
+}
+
+export interface AppContext {
+    getConnectionStatus: () => MaxConnectionStatus;
+    connectionStatusSignal: Signal<MaxConnectionStatus>;
+}

@@ -3,53 +3,8 @@ import { createPGN } from "./createPGN";
 import { createBoardSimulator } from "./boardSimulator";
 import { createUI } from "./ui";
 import { kInitialAscii } from "./kInitialAscii";
-import * as Xebra from "xebra.js";
-
-const xebraState = new Xebra.State({
-    hostname: "127.0.0.1",
-    port: 8086,
-});
-
-const sendPGN = (pgn: string) => {
-    if (xebraState.connectionState !== Xebra.CONNECTION_STATES.CONNECTED) {
-        console.error("could not send pgn, not connected to Max patch");
-        return;
-    }
-    xebraState.sendMessageToChannel("pgn", pgn);
-};
-xebraState.on("connection_changed", (connectionState) => {
-    switch (connectionState) {
-        case Xebra.CONNECTION_STATES.INIT: {
-            console.log("init");
-            break;
-        }
-        case Xebra.CONNECTION_STATES.CONNECTING: {
-            console.log("conneting");
-            break;
-        }
-        case Xebra.CONNECTION_STATES.CONNECTED: {
-            console.log("connected");
-            break;
-        }
-        case Xebra.CONNECTION_STATES.CONNECTION_FAIL: {
-            console.log("CONNECTION_FAIL");
-            break;
-        }
-        case Xebra.CONNECTION_STATES.RECONNECTING: {
-            console.log("RECONNECTING");
-            break;
-        }
-        case Xebra.CONNECTION_STATES.DISCONNECTED: {
-            console.log("DISCONNECTED");
-            break;
-        }
-        default: {
-            throw new Error("default case");
-        }
-    }
-});
-
-xebraState.connect();
+import { setupCommunication } from "./communication";
+import type { AppContext } from "./api";
 
 /*
 TODO might need to handle messages from board coming in fragmented
@@ -59,11 +14,16 @@ TODO error handling in `createPGN`
 */
 
 const boardSimulator = createBoardSimulator();
-
 const pollInterval_ms = 100;
 
+const communication = setupCommunication();
+
 const main = () => {
-    const ui = createUI();
+    const context: AppContext = {
+        connectionStatusSignal: communication.statusSignal,
+        getConnectionStatus: communication.getStatus,
+    };
+    const ui = createUI(context);
     document.body.appendChild(ui.el);
 
     const fens: string[] = [];
@@ -100,7 +60,7 @@ const main = () => {
         }
 
         try {
-            sendPGN(pgn);
+            communication.sendPGN(pgn);
         } catch (error) {
             // eslint-disable-next-line no-console
             console.error("Error sending PGN:", error);
