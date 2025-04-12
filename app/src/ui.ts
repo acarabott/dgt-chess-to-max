@@ -145,7 +145,7 @@ export const createUI = (): UI => {
 
     const boardListener: Listener<BoardMessage> = (message) => {
         liveBoardEl.value = prettyPrint(message.ascii);
-        previousLegalBoardEl.value = prettyPrint(message.lastLegalAscii);
+        previousLegalBoardEl.value = prettyPrint(message.previousLegalAsciiPosition);
         maxMessageEl.value = JSON.stringify(message, null, 4);
 
         if (!message.ok) {

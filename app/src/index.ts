@@ -34,13 +34,13 @@ const main = () => {
                 pgn: "",
                 fen: "",
                 ascii: "",
-                lastLegalAscii: "",
+                previousLegalAsciiPosition: "",
             });
         };
 
-        const dgtOrError = await setupBoard(false, kDGTPollInterval_ms, onDisconnect);
-        if (dgtOrError instanceof Error) {
-            const message = dgtOrError.message;
+        const dgtBoard = await setupBoard(false, kDGTPollInterval_ms, onDisconnect);
+        if (dgtBoard instanceof Error) {
+            const message = dgtBoard.message;
             ui.addError(message);
             max.sendMessage({
                 ok: false,
@@ -48,30 +48,17 @@ const main = () => {
                 pgn: "",
                 fen: "",
                 ascii: "",
-                lastLegalAscii: "",
+                previousLegalAsciiPosition: "",
             });
             return;
         }
 
         ui.hideStartButton();
 
-        {
-            let previousError = "";
-            dgtOrError.signal.listen((message) => {
-                if (!message.ok) {
-                    const serialized = JSON.stringify({
-                        message: message.message,
-                        ascii: message.ascii,
-                    });
-                    if (serialized !== previousError) {
-                        max.sendMessage(message);
-                        previousError = serialized;
-                    }
-                }
-            });
-        }
-
-        dgtOrError.signal.listen(ui.boardListener);
+        dgtBoard.signal.listen((message) => {
+            ui.boardListener(message);
+            max.sendMessage(message);
+        });
     });
 
     document.body.appendChild(ui.el);

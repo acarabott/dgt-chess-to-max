@@ -52,7 +52,7 @@ export interface BoardMessage {
     pgn: string;
     fen: string;
     ascii: string;
-    lastLegalAscii: string;
+    previousLegalAsciiPosition: string;
     message: string;
     ok: boolean;
 }
@@ -65,6 +65,7 @@ export interface Max {
 
 export interface DGT {
     signal: Signal<BoardMessage>;
+    // initialMessage: BoardMessage;
 }
 
 export interface AppContext {
