@@ -2,10 +2,11 @@ import { createUI } from "./ui";
 import { setupMax } from "./max-communication";
 import { kDGTPollInterval_ms, kMaxMiraChannel } from "./constants";
 import { setupBoard } from "./setupBoard";
+import type { StartAction } from "./api";
 
 /*
+TODO fix pgn error
 TODO should onError communicate with max?
-TODO avoid repeated setups of max
 
 TODO keyboard handling
 TODO error handling
@@ -21,10 +22,7 @@ TODO allow sending parameters from Max
 const main = () => {
     const max = setupMax(kMaxMiraChannel);
 
-    const ui = createUI();
-    max.connectionStatusSignal.listen(ui.maxConnectionListener);
-
-    ui.setStartAction(async () => {
+    const startAction: StartAction = async () => {
         const onDisconnect = () => {
             const message = "Board disconnected. Reconnect it!";
             ui.addError(message);
@@ -59,7 +57,10 @@ const main = () => {
             ui.boardListener(message);
             max.sendMessage(message);
         });
-    });
+    };
+
+    const ui = createUI(startAction);
+    max.connectionStatusSignal.listen(ui.maxConnectionListener);
 
     document.body.appendChild(ui.el);
 };

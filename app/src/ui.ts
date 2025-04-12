@@ -1,20 +1,13 @@
-import type { BoardMessage, Colors, ErrorHandler, StartAction, UI } from "./api";
+import type { BoardMessage, Colors, StartAction, UI } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { kMaxMiraChannel } from "./constants";
 import { prettyPrint } from "./prettyPrint";
 import type { Listener } from "./Signal";
 
-export const createUI = (): UI => {
+export const createUI = (startAction: StartAction): UI => {
     const el = document.createElement("div");
 
-    let addError: ErrorHandler;
-
-    let startAction: StartAction = () => {
-        // noop
-    };
-    const setStartAction = (action: StartAction) => {
-        startAction = action;
-    };
+    let addError: (message: string) => void;
 
     const startEl = document.createElement("button");
     {
@@ -169,7 +162,6 @@ export const createUI = (): UI => {
 
     return {
         el,
-        setStartAction,
         addError,
         hideStartButton,
         boardListener,

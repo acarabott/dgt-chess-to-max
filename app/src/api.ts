@@ -79,7 +79,6 @@ export const kDGTFilter: SerialPortFilter = {
 };
 
 export type StartAction = () => void | Promise<void>;
-export type ErrorHandler = (message: string) => void;
 export interface Colors {
     bg: string;
     fg: string;
@@ -87,8 +86,7 @@ export interface Colors {
 
 export interface UI {
     el: HTMLElement;
-    setStartAction: (action: StartAction) => void;
-    addError: ErrorHandler;
+    addError: (message: string) => void;
     hideStartButton: () => void;
     boardListener: Listener<BoardMessage>;
     maxConnectionListener: Listener<MaxConnectionStatus>;
