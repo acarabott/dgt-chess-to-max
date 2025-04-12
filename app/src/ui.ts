@@ -76,15 +76,21 @@ export const createUI = (): UI => {
         };
     }
 
-    const boardEl = document.createElement("textarea");
-    {
-        el.appendChild(boardEl);
+    const createBoardEl = (fontSize: string) => {
+        const boardEl = document.createElement("textarea");
         boardEl.readOnly = true;
-        boardEl.rows = 14;
-        boardEl.cols = 70;
+        boardEl.rows = 10;
+        boardEl.cols = 30;
         boardEl.style.fontFamily = "monospace";
-        boardEl.style.fontSize = "30px";
-    }
+        boardEl.style.fontSize = fontSize;
+        return boardEl;
+    };
+
+    const liveBoardEl = createBoardEl("30px");
+    el.appendChild(liveBoardEl);
+
+    const previousLegalBoardEl = createBoardEl("20px");
+    el.appendChild(previousLegalBoardEl);
 
     const maxEl = document.createElement("div");
     el.appendChild(maxEl);
@@ -138,7 +144,8 @@ export const createUI = (): UI => {
     };
 
     const boardListener: Listener<BoardMessage> = (message) => {
-        boardEl.value = prettyPrint(message.ascii);
+        liveBoardEl.value = prettyPrint(message.ascii);
+        previousLegalBoardEl.value = prettyPrint(message.lastLegalAscii);
         maxMessageEl.value = JSON.stringify(message, null, 4);
 
         if (!message.ok) {
