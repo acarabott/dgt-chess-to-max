@@ -1,4 +1,4 @@
-import type { Signal } from "./Signal";
+import type { Listener, Signal } from "./Signal";
 
 export interface DGTBoard {
     reset(): Promise<boolean>;
@@ -77,4 +77,18 @@ export const kDGTFilter: SerialPortFilter = {
     usbProductId: 10,
 };
 
+export type StartAction = () => void | Promise<void>;
 export type ErrorHandler = (message: string) => void;
+export interface Colors {
+    bg: string;
+    fg: string;
+}
+
+export interface UI {
+    el: HTMLElement;
+    setStartAction: (action: StartAction) => void;
+    addError: ErrorHandler;
+    hideStartButton: () => void;
+    boardListener: Listener<BoardMessage>;
+    maxConnectionListener: Listener<MaxConnectionStatus>;
+}

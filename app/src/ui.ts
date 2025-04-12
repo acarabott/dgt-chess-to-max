@@ -1,11 +1,10 @@
-import type { BoardMessage, ErrorHandler } from "./api";
+import type { BoardMessage, Colors, ErrorHandler, StartAction, UI } from "./api";
 import { MaxConnectionStatus } from "./api";
+import { kMaxMiraChannel } from "./constants";
 import { prettyPrint } from "./prettyPrint";
 import type { Listener } from "./Signal";
 
-export type StartAction = () => void | Promise<void>;
-
-export const createUI = () => {
+export const createUI = (): UI => {
     const el = document.createElement("div");
 
     let addError: ErrorHandler;
@@ -82,7 +81,38 @@ export const createUI = () => {
     const maxConnectionEl = document.createElement("div");
     el.appendChild(maxConnectionEl);
     const maxConnectionListener: Listener<MaxConnectionStatus> = (status) => {
-        maxConnectionEl.textContent = getConnectionStatusText(status);
+        let connectionText: string;
+
+        let colors: Colors | undefined;
+        switch (status) {
+            case MaxConnectionStatus.Init:
+                connectionText = "Max: Initialized";
+                break;
+            case MaxConnectionStatus.Connecting:
+                connectionText = "Max: Connecting";
+                break;
+            case MaxConnectionStatus.Connected:
+                connectionText = "Max: Connected";
+                colors = { bg: "green", fg: "white" };
+                break;
+            case MaxConnectionStatus.ConnectionFailed:
+                connectionText = "Max: Connection Failed";
+                break;
+            case MaxConnectionStatus.Reconnecting:
+                connectionText = "Max: Reconnecting";
+                break;
+            case MaxConnectionStatus.Disconnected: {
+                const text = `Max disconnected. Restart the patch and make sure there is a mira.frame object and a mira.channel object with the name ${kMaxMiraChannel}`;
+                addError(text);
+                connectionText = text;
+                colors = { bg: "red", fg: "black" };
+                break;
+            }
+        }
+        maxConnectionEl.textContent = connectionText;
+        colors ??= { bg: "transparent", fg: "black" };
+        maxConnectionEl.style.backgroundColor = colors.bg;
+        maxConnectionEl.style.color = colors.fg;
     };
 
     return {
@@ -93,21 +123,4 @@ export const createUI = () => {
         boardListener,
         maxConnectionListener,
     };
-};
-
-const getConnectionStatusText = (status: MaxConnectionStatus) => {
-    switch (status) {
-        case MaxConnectionStatus.Init:
-            return "Max: Initialized";
-        case MaxConnectionStatus.Connecting:
-            return "Max: Connecting";
-        case MaxConnectionStatus.Connected:
-            return "Max: Connected";
-        case MaxConnectionStatus.ConnectionFailed:
-            return "Max: Connection Failed";
-        case MaxConnectionStatus.Reconnecting:
-            return "Max: Reconnecting";
-        case MaxConnectionStatus.Disconnected:
-            return "Max: Disconnected. Re-open Max and make sure there is a mira.frame object and a mira.channel object with the name 'pgn'";
-    }
 };
