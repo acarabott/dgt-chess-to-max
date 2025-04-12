@@ -40,12 +40,19 @@ export const setupBoard = async (
     pollInterval_ms: number,
     onDisconnect: () => void,
 ): Promise<DGT | Error> => {
+    let shouldTick = true;
+
+    const onSerialPortDisconnect = () => {
+        shouldTick = false;
+        onDisconnect();
+    };
+
     const boardOrError = await (async () => {
         if (simulateGame) {
             return createBoardSimulator();
         }
 
-        const serialPortOrError = await createSerialPort(onDisconnect);
+        const serialPortOrError = await createSerialPort(onSerialPortDisconnect);
         if (serialPortOrError instanceof Error) {
             return serialPortOrError;
         }
@@ -62,7 +69,9 @@ export const setupBoard = async (
     const game = new Chess();
 
     const tick = async () => {
-        setTimeout(() => tick(), pollInterval_ms);
+        if (shouldTick) {
+            setTimeout(() => tick(), pollInterval_ms);
+        }
 
         const boardResult = await (async (): Promise<BoardResult> => {
             // read the state from the board
