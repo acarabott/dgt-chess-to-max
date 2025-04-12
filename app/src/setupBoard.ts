@@ -27,6 +27,7 @@ interface BoardResultGood extends BoardResultBase {
 interface BoardResultBad extends BoardResultBase {
     type: BoardResultType.Bad;
     message: string;
+    ascii: string;
 }
 
 interface BoardResultIgnore extends BoardResultBase {
@@ -47,23 +48,23 @@ export const setupBoard = async (
         onDisconnect();
     };
 
-    const boardOrError = await (async () => {
+    const board = await (async () => {
         if (simulateGame) {
             return createBoardSimulator();
         }
 
-        const serialPortOrError = await createSerialPort(onSerialPortDisconnect);
-        if (serialPortOrError instanceof Error) {
-            return serialPortOrError;
+        const serialPort = await createSerialPort(onSerialPortDisconnect);
+        if (serialPort instanceof Error) {
+            return serialPort;
         }
-        return new Board(serialPortOrError);
+        return new Board(serialPort);
     })();
 
-    if (boardOrError instanceof Error) {
-        return boardOrError;
+    if (board instanceof Error) {
+        return board;
     }
 
-    await boardOrError.reset();
+    await board.reset();
 
     const signal = new Signal<BoardMessage>();
     const game = new Chess();
@@ -76,13 +77,14 @@ export const setupBoard = async (
         const boardResult = await (async (): Promise<BoardResult> => {
             // read the state from the board
             // ------------------------------------------------------------------------------
-            let boardState: Uint8Array | undefined;
+            let boardData: Uint8Array | undefined;
             try {
-                boardState = await boardOrError.getBoardState();
-                if (boardState === undefined) {
+                boardData = await board.getBoardState();
+                if (boardData === undefined) {
                     return {
                         type: BoardResultType.Bad,
                         message: "Could not read the board. Check the connection.",
+                        ascii: "",
                     };
                 }
             } catch (error: unknown) {
@@ -90,13 +92,14 @@ export const setupBoard = async (
                 return {
                     type: BoardResultType.Bad,
                     message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${errorMessage}`,
+                    ascii: "",
                 };
             }
 
             // Check if a move was made
             // ------------------------------------------------------------------------------
-            const boardMessage = parseBoardMessage(boardState);
-            if (boardMessage.ascii === kInitialAscii || boardMessage.fen === game.fen()) {
+            const boardState = parseBoardMessage(boardData);
+            if (boardState.ascii === kInitialAscii || boardState.fen === game.fen()) {
                 // Board was read ok, but is in the initial position or nothing changed
                 // checking ASCII for initial state, not FEN because FEN can have some slight variations
                 // depending on how it was generated (from initial DGT board state or initial Chess instance)
@@ -119,6 +122,7 @@ export const setupBoard = async (
                     type: BoardResultType.Bad,
                     message:
                         "Could not generate PGN. Most likely because an illegal move, reset the pieces to match the last legal position.",
+                    ascii: boardState.ascii,
                 };
             }
 
@@ -154,8 +158,8 @@ export const setupBoard = async (
             case BoardResultType.Bad: {
                 message = {
                     ok: false,
+                    ascii: boardResult.ascii,
                     pgn: "",
-                    ascii: "",
                     fen: "",
                     message: boardResult.message,
                     lastLegalAscii: game.ascii(),
