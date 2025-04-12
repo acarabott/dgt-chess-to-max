@@ -53,10 +53,21 @@ export const createUI = (): UI => {
             });
         }
 
+        let previousMessage = "";
+        let repeatedMessageCount = 0;
         addError = (message) => {
+            if (message === previousMessage && errorListEl.lastChild !== null) {
+                errorListEl.removeChild(errorListEl.lastChild);
+                repeatedMessageCount++;
+            } else {
+                repeatedMessageCount = 0;
+            }
+            previousMessage = message;
+
             const li = document.createElement("li");
             const now = new Date().toUTCString();
-            const error = `${now}: ${message}`;
+            const count = repeatedMessageCount === 0 ? "" : ` (${repeatedMessageCount})`;
+            const error = `${now}: ${message}${count}`;
             li.textContent = error;
             errorListEl.prepend(li);
             clearErrorsEl.style.display = "block";
@@ -74,12 +85,23 @@ export const createUI = (): UI => {
         boardEl.style.fontFamily = "monospace";
         boardEl.style.fontSize = "30px";
     }
-    const boardListener: Listener<BoardMessage> = (message) => {
-        boardEl.value = prettyPrint(message.ascii);
-    };
+
+    const maxEl = document.createElement("div");
+    el.appendChild(maxEl);
+    maxEl.style.border = "1px black solid";
+
+    const maxTitleEl = document.createElement("h2");
+    maxTitleEl.textContent = "Max";
+    maxEl.appendChild(maxTitleEl);
 
     const maxConnectionEl = document.createElement("div");
-    el.appendChild(maxConnectionEl);
+    maxEl.appendChild(maxConnectionEl);
+
+    const maxMessageEl = document.createElement("textarea");
+    maxEl.appendChild(maxMessageEl);
+    maxMessageEl.rows = 20;
+    maxMessageEl.cols = 80;
+
     const maxConnectionListener: Listener<MaxConnectionStatus> = (status) => {
         let connectionText: string;
 
@@ -113,6 +135,15 @@ export const createUI = (): UI => {
         colors ??= { bg: "transparent", fg: "black" };
         maxConnectionEl.style.backgroundColor = colors.bg;
         maxConnectionEl.style.color = colors.fg;
+    };
+
+    const boardListener: Listener<BoardMessage> = (message) => {
+        boardEl.value = prettyPrint(message.ascii);
+        maxMessageEl.value = JSON.stringify(message, null, 4);
+
+        if (!message.ok) {
+            addError(message.message);
+        }
     };
 
     return {
