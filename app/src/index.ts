@@ -6,7 +6,6 @@ import type { StartAction } from "./api";
 
 /*
 TODO fix pgn error
-TODO should onError communicate with max?
 
 TODO keyboard handling
 TODO error handling
