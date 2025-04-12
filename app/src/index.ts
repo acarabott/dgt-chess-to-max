@@ -1,6 +1,6 @@
 import { createUI } from "./ui";
 import { setupMax } from "./max-communication";
-import { kDGTPollInterval_ms, kMaxErrorInterval_ms, kMaxMiraChannel } from "./constants";
+import { kDGTPollInterval_ms, kMaxMiraChannel } from "./constants";
 import { setupBoard } from "./setupBoard";
 
 /*
@@ -56,15 +56,17 @@ const main = () => {
         ui.hideStartButton();
 
         {
-            let previousErrorTimestamp_ms: number | undefined;
+            let previousError = "";
             dgtOrError.signal.listen((message) => {
-                const now = Date.now();
-                if (
-                    previousErrorTimestamp_ms === undefined ||
-                    now - previousErrorTimestamp_ms >= kMaxErrorInterval_ms
-                ) {
-                    max.sendMessage(message);
-                    previousErrorTimestamp_ms = now;
+                if (!message.ok) {
+                    const serialized = JSON.stringify({
+                        message: message.message,
+                        ascii: message.ascii,
+                    });
+                    if (serialized !== previousError) {
+                        max.sendMessage(message);
+                        previousError = serialized;
+                    }
                 }
             });
         }
