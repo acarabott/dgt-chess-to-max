@@ -48,20 +48,23 @@ export enum MaxConnectionStatus {
     Disconnected = "Disconnected",
 }
 
-export interface MaxMessage {
+export interface BoardMessage {
     pgn: string;
-    timestamp: number;
+    fen: string;
+    ascii: string;
+    lastLegalAscii: string;
+    message: string;
+    ok: boolean;
 }
 
 export interface Max {
     getConnectionStatus: () => MaxConnectionStatus;
     connectionStatusSignal: Signal<MaxConnectionStatus>;
-    sendMessage: (message: MaxMessage) => void;
+sendMessage: (message: BoardMessage) => void;
 }
 
 export interface DGT {
-    asciiSignal: Signal<string>;
-    pgnSignal: Signal<string>;
+    signal: Signal<BoardMessage>;
 }
 
 export interface AppContext {

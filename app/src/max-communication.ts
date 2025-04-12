@@ -1,9 +1,9 @@
 import * as Xebra from "xebra.js";
 import { Signal } from "./Signal";
-import type { Max, MaxMessage } from "./api";
+import type { BoardMessage, Max } from "./api";
 import { MaxConnectionStatus } from "./api";
 
-export const setupMax = (): Max => {
+export const setupMax = (miraChannelName: string): Max => {
     const xebraState = new Xebra.State({
         hostname: "127.0.0.1",
         port: 8086,
@@ -45,8 +45,8 @@ export const setupMax = (): Max => {
         connectionStatusSignal.notify(status);
     });
 
-    const messageQueue: Readonly<MaxMessage>[] = [];
-    const sendMessage = (message: MaxMessage) => {
+    const messageQueue: Readonly<BoardMessage>[] = [];
+    const sendMessage = (message: BoardMessage) => {
         messageQueue.push(message);
 
         if (xebraState.connectionState !== Xebra.CONNECTION_STATES.CONNECTED) {
@@ -57,7 +57,7 @@ export const setupMax = (): Max => {
             const queueMessage = messageQueue.shift();
             if (queueMessage !== undefined) {
                 const serialized = JSON.stringify(message);
-                xebraState.sendMessageToChannel("pgn", serialized);
+                xebraState.sendMessageToChannel(miraChannelName, serialized);
             }
         }
     };

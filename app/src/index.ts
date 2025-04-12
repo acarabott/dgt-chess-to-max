@@ -5,15 +5,19 @@ import type { AppContext } from "./api";
 import { setupBoard } from "./setupBoard";
 
 /*
-TODO buffering values until message is complete (or use DGT library)
-TODO error handling in `createPGN`
+TODO stop sending error so fast
 TODO keyboard handling
 TODO error handling
 TODO web server startup
 TODO deploy to website
 TODO convert to Node?
 TODO make UI nice
+TODO what format for lastLegalAscii? 
 */
+
+const kDGTPollInterval_ms = 100;
+const kDGTBaudRate = 9600;
+const kMaxMiraChannel = "chess";
 
 const main = () => {
     const setupUI = createSetupUI(() => {
@@ -21,10 +25,10 @@ const main = () => {
             let serialPort: SerialPort;
             try {
                 serialPort = await navigator.serial.requestPort({ filters: [kDGTFilter] });
-                serialPort.onconnect = (event) => {
-                    console.log("connected:", event);
+                serialPort.onconnect = (_event) => {
+                    // TODO
                 };
-                await serialPort.open({ baudRate: 9600 });
+                await serialPort.open({ baudRate: kDGTBaudRate });
             } catch (error: unknown) {
                 // eslint-disable-next-line no-console
                 console.error(error);
@@ -33,16 +37,14 @@ const main = () => {
 
             document.body.removeChild(setupUI.el);
             const context: AppContext = {
-                max: setupMax(),
-                dgt: await setupBoard(serialPort),
+                max: setupMax(kMaxMiraChannel),
+                dgt: await setupBoard(serialPort, kDGTPollInterval_ms),
             };
 
-            context.dgt.pgnSignal.listen((pgn) => {
-                context.max.sendMessage({
-                    pgn,
-                    timestamp: Date.now(),
-                });
+            context.dgt.signal.listen((message) => {
+                context.max.sendMessage(message);
             });
+
             const chessUI = createChessUI(context);
             document.body.appendChild(chessUI.el);
         })();

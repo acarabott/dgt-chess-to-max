@@ -46,8 +46,8 @@ export const createChessUI = (context: AppContext) => {
         boardEl.style.fontSize = "30px";
     }
 
-    context.dgt.asciiSignal.listen((ascii) => {
-        boardEl.value = prettyPrint(ascii);
+    context.dgt.signal.listen((message) => {
+        boardEl.value = prettyPrint(message.ascii);
     });
 
     const connectionEl = document.createElement("div");
