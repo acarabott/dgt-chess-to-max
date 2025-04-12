@@ -1,17 +1,15 @@
-import type { ErrorHandler } from "./api";
 import { kDGTFilter } from "./api";
 import { kDGTBaudRate } from "./constants";
 
-export const createSerialPort = async (onError: ErrorHandler): Promise<SerialPort | undefined> => {
+export const createSerialPort = async (onDisconnect: () => void): Promise<SerialPort | Error> => {
     if ((navigator.serial as unknown) === undefined) {
-        onError("This browser does not support the Web Serial API, use Google Chrome.");
-        return;
+        return new Error("This browser does not support the Web Serial API, use Google Chrome.");
     }
 
     try {
         const serialPort = await navigator.serial.requestPort({ filters: [kDGTFilter] });
         serialPort.addEventListener("disconnect", (_event) => {
-            onError("Board was disconnected!");
+            onDisconnect();
         });
 
         await serialPort.open({ baudRate: kDGTBaudRate });
@@ -19,7 +17,6 @@ export const createSerialPort = async (onError: ErrorHandler): Promise<SerialPor
         return serialPort;
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-        onError(`Could not open serial port: ${errorMessage}`);
-        return undefined;
+        return new Error(`Could not open serial port: ${errorMessage}`);
     }
 };

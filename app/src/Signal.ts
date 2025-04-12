@@ -1,4 +1,4 @@
-export type Listener<T> = (value: T) => void;
+export type Listener<T> = (value: Readonly<T>) => void;
 
 export class Signal<T> {
     private listeners = new Set<Listener<T>>();

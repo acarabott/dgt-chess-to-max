@@ -1,8 +1,11 @@
 import { Chess } from "chess.js";
-import type { BoardMessage, DGT, DGTBoard } from "./api";
+import type { BoardMessage, DGT } from "./api";
 import { kInitialAscii } from "./kInitialAscii";
 import { parseBoardMessage } from "./parseBoardMessage";
 import { Signal } from "./Signal";
+import { Board } from "../dgt/Board";
+import { createBoardSimulator } from "./boardSimulator";
+import { createSerialPort } from "./createSerialPort";
 
 enum BoardResultType {
     Good = "Good",
@@ -32,8 +35,28 @@ interface BoardResultIgnore extends BoardResultBase {
 
 type BoardResult = BoardResultBad | BoardResultGood | BoardResultIgnore;
 
-export const setupBoard = async (board: DGTBoard, pollInterval_ms: number): Promise<DGT> => {
-    await board.reset();
+export const setupBoard = async (
+    simulateGame: boolean,
+    pollInterval_ms: number,
+    onDisconnect: () => void,
+): Promise<DGT | Error> => {
+    const boardOrError = await (async () => {
+        if (simulateGame) {
+            return createBoardSimulator();
+        }
+
+        const serialPortOrError = await createSerialPort(onDisconnect);
+        if (serialPortOrError instanceof Error) {
+            return serialPortOrError;
+        }
+        return new Board(serialPortOrError);
+    })();
+
+    if (boardOrError instanceof Error) {
+        return boardOrError;
+    }
+
+    await boardOrError.reset();
 
     const signal = new Signal<BoardMessage>();
     const game = new Chess();
@@ -46,7 +69,7 @@ export const setupBoard = async (board: DGTBoard, pollInterval_ms: number): Prom
             // ------------------------------------------------------------------------------
             let boardState: Uint8Array | undefined;
             try {
-                boardState = await board.getBoardState();
+                boardState = await boardOrError.getBoardState();
                 if (boardState === undefined) {
                     return {
                         type: BoardResultType.Bad,

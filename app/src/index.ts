@@ -1,11 +1,7 @@
-import { createChessUI, createSetupUI } from "./ui";
+import { createUI } from "./ui";
 import { setupMax } from "./max-communication";
-import type { AppContext, DGTBoard, ErrorHandler } from "./api";
+import { kDGTPollInterval_ms, kMaxMiraChannel } from "./constants";
 import { setupBoard } from "./setupBoard";
-import { kMaxMiraChannel, kDGTPollInterval_ms } from "./constants";
-import { createSerialPort } from "./createSerialPort";
-import { Board } from "../dgt/Board";
-import { createBoardSimulator } from "./boardSimulator";
 
 /*
 TODO stop sending error so fast
@@ -22,56 +18,37 @@ TODO what format for lastLegalAscii?
 TODO button to simulate game
 */
 
-const setupApp = async (simulateGame: boolean, onError: ErrorHandler) => {
-    let board: DGTBoard;
+const main = () => {
+    const max = setupMax(kMaxMiraChannel);
 
-    if (!simulateGame) {
-        const serialPort = await createSerialPort(onError);
-        if (serialPort === undefined) {
-            onError("failed to create serial port");
+    const ui = createUI();
+    max.connectionStatusSignal.listen(ui.maxConnectionListener);
+
+    ui.setStartAction(async () => {
+        const onDisconnect = () => {
+            ui.addError("Board disconnected. Reconnect it!");
+        };
+
+        const dgtOrError = await setupBoard(false, kDGTPollInterval_ms, onDisconnect);
+        if (dgtOrError instanceof Error) {
+            ui.addError(dgtOrError.message);
             return;
         }
-        board = new Board(serialPort);
-    } else {
-        board = createBoardSimulator();
-    }
 
-    const context: AppContext = {
-        max: setupMax(kMaxMiraChannel),
-        dgt: await setupBoard(board, kDGTPollInterval_ms),
-    };
-
-    context.dgt.signal.listen((message) => {
-        context.max.sendMessage(message);
+        ui.hideStartButton();
+        dgtOrError.signal.listen((message) => {
+            max.sendMessage(message);
+        });
+        dgtOrError.signal.listen(ui.boardListener);
     });
 
-    return context;
-};
-
-const main = () => {
-    const setupUI = createSetupUI((onError) => {
-        setupApp(false, onError)
-            .then((context) => {
-                if (context === undefined) {
-                    onError("Failed to set up app");
-                    return;
-                }
-
-                document.body.removeChild(setupUI.el);
-                const chessUI = createChessUI(context);
-                document.body.appendChild(chessUI.el);
-            })
-            .catch((reason: unknown) => {
-                const reasonMessage =
-                    reason instanceof Error ? reason.message : JSON.stringify(reason);
-                onError(`Failed to set up app: ${reasonMessage}`);
-            });
-    });
-    document.body.appendChild(setupUI.el);
+    document.body.appendChild(ui.el);
 };
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", main);
+    document.addEventListener("DOMContentLoaded", () => {
+        main();
+    });
 } else {
     main();
 }
