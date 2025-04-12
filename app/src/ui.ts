@@ -107,6 +107,19 @@ export const createUI = (): UI => {
     maxEl.appendChild(maxMessageEl);
     maxMessageEl.rows = 20;
     maxMessageEl.cols = 80;
+    maxMessageEl.style.textWrapMode = "nowrap";
+
+    const maxMessageHistory: string[] = [];
+    const kMaxMessageHistoryLength = 50;
+    const appendMaxMessage = (message: Readonly<BoardMessage>) => {
+        const timestamp = new Date().toUTCString();
+        const timeStampedMessage = `${timestamp}: ${JSON.stringify(message)}`;
+        maxMessageHistory.unshift(timeStampedMessage);
+        if (maxMessageHistory.length > kMaxMessageHistoryLength) {
+            maxMessageHistory.pop();
+        }
+        maxMessageEl.textContent = maxMessageHistory.join("\n");
+    };
 
     const maxConnectionListener: Listener<MaxConnectionStatus> = (status) => {
         let connectionText: string;
@@ -146,7 +159,8 @@ export const createUI = (): UI => {
     const boardListener: Listener<BoardMessage> = (message) => {
         liveBoardEl.value = prettyPrint(message.ascii);
         previousLegalBoardEl.value = prettyPrint(message.previousLegalAsciiPosition);
-        maxMessageEl.value = JSON.stringify(message, null, 4);
+
+        appendMaxMessage(message);
 
         if (!message.ok) {
             addError(message.message);
