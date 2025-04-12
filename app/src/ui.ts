@@ -1,18 +1,54 @@
-import type { AppContext } from "./api";
+import type { AppContext, ErrorHandler } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { prettyPrint } from "./prettyPrint";
 
-export const createSetupUI = (onStart: () => void) => {
+export const createSetupUI = (onStart: (onError: ErrorHandler) => void) => {
     const el = document.createElement("div");
+
+    let addError: ErrorHandler;
+
     const startEl = document.createElement("button");
-    startEl.textContent = "Start";
-    startEl.addEventListener("click", () => {
-        onStart();
-    });
-    el.appendChild(startEl);
+    {
+        el.appendChild(startEl);
+        startEl.textContent = "Start";
+        startEl.addEventListener("click", () => {
+            onStart(addError);
+        });
+    }
+
+    {
+        const errorContainerEl = document.createElement("div");
+        el.appendChild(errorContainerEl);
+        errorContainerEl.style.backgroundColor = "red";
+        errorContainerEl.style.fontFamily = "monospace";
+
+        const errorListEl = document.createElement("ul");
+        errorContainerEl.appendChild(errorListEl);
+
+        const clearErrorsEl = document.createElement("button");
+        {
+            errorContainerEl.appendChild(clearErrorsEl);
+            clearErrorsEl.textContent = "Clear Errors";
+            clearErrorsEl.style.display = "none";
+            clearErrorsEl.addEventListener("click", () => {
+                errorListEl.innerHTML = "";
+                clearErrorsEl.style.display = "none";
+            });
+        }
+
+        addError = (message) => {
+            const li = document.createElement("li");
+            const now = new Date().toUTCString();
+            const error = `${now}: ${message}`;
+            li.textContent = error;
+            errorListEl.prepend(li);
+            clearErrorsEl.style.display = "block";
+        };
+    }
 
     return {
         el,
+        addError,
     };
 };
 

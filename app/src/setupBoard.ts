@@ -1,7 +1,5 @@
 import { Chess } from "chess.js";
-import { Board } from "../dgt/Board";
-import type { BoardMessage, DGT } from "./api";
-import { createBoardSimulator } from "./boardSimulator";
+import type { BoardMessage, DGT, DGTBoard } from "./api";
 import { kInitialAscii } from "./kInitialAscii";
 import { parseBoardMessage } from "./parseBoardMessage";
 import { Signal } from "./Signal";
@@ -34,11 +32,7 @@ interface BoardResultIgnore extends BoardResultBase {
 
 type BoardResult = BoardResultBad | BoardResultGood | BoardResultIgnore;
 
-export const setupBoard = async (
-    serialPort: SerialPort | undefined,
-    pollInterval_ms: number,
-): Promise<DGT> => {
-    const board = serialPort === undefined ? createBoardSimulator() : new Board(serialPort);
+export const setupBoard = async (board: DGTBoard, pollInterval_ms: number): Promise<DGT> => {
     await board.reset();
 
     const signal = new Signal<BoardMessage>();

@@ -2,17 +2,15 @@
 /* eslint no-labels: ["error", { "allowLoop": true }] */
 /* global TransformStream */
 
+import type { DGTBoard } from "../src/api";
 import { ReturnSerialNr, ReturnVersion, SendBoard, SendReset, SendUpdateBoard } from "./Command";
 import type { Command } from "./Command";
 
-export class Board {
+export class Board implements DGTBoard {
     #port: SerialPort;
     #writer;
     #readable: ReadableStream<Uint8Array>;
     #msgFieldUpdateTransformer;
-
-    #serialNr?: string;
-    #version?: string;
 
     #write = async (...args: unknown[]) => {
         await this.#writer.write(...args);
@@ -37,16 +35,19 @@ export class Board {
             },
         });
     }
+    getSerialNumber(): Promise<string | undefined> {
+        return this.message(new ReturnSerialNr());
+    }
+    getVersion(): Promise<string | undefined> {
+        return this.message(new ReturnVersion());
+    }
+    close(): Promise<void> {
+        throw new Error("Method not implemented.");
+    }
 
     async reset() {
         await this.message(new SendReset());
-        this.#serialNr = await this.message(new ReturnSerialNr());
-        this.#version = await this.message(new ReturnVersion());
-
-        return {
-            serialNr: this.#serialNr,
-            version: this.#version,
-        };
+        return true; // TODO
     }
 
     async message<T>(cmd: Command<T>) {
@@ -84,14 +85,6 @@ export class Board {
         const transform = this.#msgFieldUpdateTransformer;
         const stream = this.#port.readable.pipeThrough(transform);
         return stream.getReader();
-    }
-
-    get serialNr() {
-        return this.#serialNr;
-    }
-
-    get version() {
-        return this.#version;
     }
 
     static FILTERS = [{ usbVendorId: 0x0403, usbProductId: 0x6001 }];

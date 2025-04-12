@@ -60,7 +60,7 @@ export interface BoardMessage {
 export interface Max {
     getConnectionStatus: () => MaxConnectionStatus;
     connectionStatusSignal: Signal<MaxConnectionStatus>;
-sendMessage: (message: BoardMessage) => void;
+    sendMessage: (message: BoardMessage) => void;
 }
 
 export interface DGT {
@@ -76,3 +76,5 @@ export const kDGTFilter: SerialPortFilter = {
     usbVendorId: 1240,
     usbProductId: 10,
 };
+
+export type ErrorHandler = (message: string) => void;
