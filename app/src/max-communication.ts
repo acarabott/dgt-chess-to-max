@@ -2,6 +2,7 @@ import * as Xebra from "xebra.js";
 import { Signal } from "./Signal";
 import type { BoardMessage, Max } from "./api";
 import { MaxConnectionStatus } from "./api";
+import { kMaxReconnectionInterval_ms } from "./constants";
 
 export const setupMax = (miraChannelName: string): Max => {
     const xebraState = new Xebra.State({
@@ -31,9 +32,6 @@ export const setupMax = (miraChannelName: string): Max => {
                     return MaxConnectionStatus.Reconnecting;
                 }
                 case Xebra.CONNECTION_STATES.DISCONNECTED: {
-                    setTimeout(() => {
-                        xebraState.connect();
-                    }, 1000 * 3);
                     return MaxConnectionStatus.Disconnected;
                 }
                 default: {
@@ -43,6 +41,14 @@ export const setupMax = (miraChannelName: string): Max => {
         })();
         connectionStatus = status;
         connectionStatusSignal.notify(status);
+        if (
+            status === MaxConnectionStatus.Disconnected ||
+            status === MaxConnectionStatus.ConnectionFailed
+        ) {
+            setTimeout(() => {
+                xebraState.connect();
+            }, kMaxReconnectionInterval_ms);
+        }
     });
 
     const messageQueue: Readonly<BoardMessage>[] = [];
