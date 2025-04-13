@@ -76,7 +76,7 @@ export class Board implements DGTBoard {
         }
     }
 
-    async getBoardState() {
+    async getBoardData() {
         return await this.message(new SendBoard());
     }
 

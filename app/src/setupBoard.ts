@@ -1,22 +1,28 @@
 import { Chess } from "chess.js";
-import type { BoardMessage, DGT } from "./api";
-import { kInitialAscii } from "./kInitialAscii";
+import type { BoardMessage, BoardState, DGT } from "./api";
 import { parseBoardMessage } from "./parseBoardMessage";
 import { Signal } from "./Signal";
 import { Board } from "../dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
 import { createSerialPort } from "./createSerialPort";
+import { kInitialAscii } from "./kInitialAscii";
 
 enum BoardResultType {
     Good = "Good",
-    Bad = "Bad",
+    Error = "Error",
     Ignore = "Ignore",
 }
 
 interface BoardResult {
     type: BoardResultType;
+    isGameLegal: boolean;
     boardAscii: string;
     message: string;
+}
+
+interface PreviousLiveState {
+    ascii: string;
+    isGameLegal: boolean;
 }
 
 export const setupBoard = async (
@@ -49,11 +55,14 @@ export const setupBoard = async (
 
     await board.reset();
 
-    const signal = new Signal<BoardMessage>();
+    const boardSignal = new Signal<BoardMessage>();
     const game = new Chess();
-    let previousLiveAscii = "";
 
-    let haveHandledInitialPosition = false;
+    let previousLiveState: PreviousLiveState = {
+        ascii: "",
+        isGameLegal: false,
+    };
+
     const tick = async () => {
         if (shouldTick) {
             setTimeout(() => tick(), pollInterval_ms);
@@ -62,43 +71,39 @@ export const setupBoard = async (
         const boardResult = await (async (): Promise<BoardResult> => {
             // read the state from the board
             // ------------------------------------------------------------------------------
-            let boardData: Uint8Array | undefined;
-            try {
-                boardData = await board.getBoardState();
-                if (boardData === undefined) {
+            let boardState: BoardState;
+            {
+                try {
+                    const boardData = await board.getBoardData();
+                    if (boardData === undefined) {
+                        return {
+                            type: BoardResultType.Error,
+                            isGameLegal: false,
+                            message: "Could not read the board. Check the connection.",
+                            boardAscii: "",
+                        };
+                    }
+                    boardState = parseBoardMessage(boardData);
+                } catch (error: unknown) {
+                    const errorMessage =
+                        error instanceof Error ? error.message : JSON.stringify(error);
                     return {
-                        type: BoardResultType.Bad,
-                        message: "Could not read the board. Check the connection.",
+                        type: BoardResultType.Error,
+                        isGameLegal: false,
+                        message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${errorMessage}`,
                         boardAscii: "",
                     };
                 }
-            } catch (error: unknown) {
-                const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-                return {
-                    type: BoardResultType.Bad,
-                    message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${errorMessage}`,
-                    boardAscii: "",
-                };
             }
 
             // Check if a move was made
             // ------------------------------------------------------------------------------
-            const boardState = parseBoardMessage(boardData);
 
-            // checking ASCII for initial state, not FEN because FEN can have some slight variations
-            // depending on how it was generated (from initial DGT board state or initial Chess instance)
-            const isInitialPosition = boardState.ascii === kInitialAscii;
-            if (isInitialPosition) {
-                if (!haveHandledInitialPosition) {
-                    haveHandledInitialPosition = true;
-                    return {
-                        type: BoardResultType.Good,
-                        boardAscii: boardState.ascii,
-                        message: "",
-                    };
-                }
+            const isGameStart = boardState.ascii === kInitialAscii && game.history().length === 0;
+            if (isGameStart) {
                 return {
-                    type: BoardResultType.Ignore,
+                    type: BoardResultType.Good,
+                    isGameLegal: true,
                     boardAscii: boardState.ascii,
                     message: "",
                 };
@@ -106,14 +111,23 @@ export const setupBoard = async (
 
             // Check if live state of the board has changed
             // ------------------------------------------------------------------------------
-            if (boardState.ascii === previousLiveAscii) {
+            const hasBoardChanged = boardState.ascii !== previousLiveState.ascii;
+            if (!hasBoardChanged) {
+                const isGameLegal = boardState.ascii === game.ascii();
+                const hasLegalChanged = isGameLegal !== previousLiveState.isGameLegal;
+                previousLiveState = {
+                    ascii: boardState.ascii,
+                    isGameLegal,
+                };
+                const type = hasLegalChanged ? BoardResultType.Good : BoardResultType.Ignore;
+
                 return {
-                    type: BoardResultType.Ignore,
+                    type,
+                    isGameLegal,
                     boardAscii: boardState.ascii,
                     message: "",
                 };
             }
-            previousLiveAscii = boardState.ascii;
 
             // Check if the move was legal
             // ------------------------------------------------------------------------------
@@ -126,9 +140,17 @@ export const setupBoard = async (
                 return movePosition === boardPosition;
             });
 
-            if (move === undefined) {
+            const moveIsLegal = move !== undefined;
+
+            previousLiveState = {
+                ascii: boardState.ascii,
+                isGameLegal: moveIsLegal,
+            };
+
+            if (!moveIsLegal) {
                 return {
-                    type: BoardResultType.Bad,
+                    type: BoardResultType.Good,
+                    isGameLegal: false,
                     message:
                         "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.",
                     boardAscii: boardState.ascii,
@@ -141,6 +163,7 @@ export const setupBoard = async (
 
             const result: BoardResult = {
                 type: BoardResultType.Good,
+                isGameLegal: true,
                 boardAscii: boardState.ascii,
                 message: "",
             };
@@ -148,25 +171,26 @@ export const setupBoard = async (
             return result;
         })();
 
-        const sendBoardMessage = (ok: boolean, message: string) => {
+        const sendBoardMessage = (ok: boolean) => {
             const boardMessage: BoardMessage = {
                 ok,
+                isGameLegal: boardResult.isGameLegal,
                 boardAscii: boardResult.boardAscii,
                 gameAscii: game.ascii(),
                 pgn: game.pgn(),
                 fen: game.fen(),
-                message,
+                message: boardResult.message,
             };
-            signal.notify(boardMessage);
+            boardSignal.notify(boardMessage);
         };
 
         switch (boardResult.type) {
             case BoardResultType.Good: {
-                sendBoardMessage(true, "");
+                sendBoardMessage(true);
                 break;
             }
-            case BoardResultType.Bad: {
-                sendBoardMessage(false, boardResult.message);
+            case BoardResultType.Error: {
+                sendBoardMessage(false);
                 break;
             }
             case BoardResultType.Ignore: {
@@ -178,6 +202,6 @@ export const setupBoard = async (
     void tick();
 
     return {
-        signal,
+        signal: boardSignal,
     };
 };

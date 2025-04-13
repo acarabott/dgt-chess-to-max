@@ -2,7 +2,7 @@ import type { Listener, Signal } from "./Signal";
 
 export interface DGTBoard {
     reset(): Promise<boolean>;
-    getBoardState(): Promise<Uint8Array | undefined>;
+    getBoardData(): Promise<Uint8Array | undefined>;
     getSerialNumber(): Promise<string | undefined>;
     getVersion(): Promise<string | undefined>;
     close(): Promise<void>;
@@ -48,12 +48,18 @@ export enum MaxConnectionStatus {
     Disconnected = "Disconnected",
 }
 
+export interface BoardState {
+    fen: string;
+    ascii: string;
+}
+
 export interface BoardMessage {
     pgn: string;
     fen: string;
     boardAscii: string;
     gameAscii: string;
     message: string;
+    isGameLegal: boolean;
     ok: boolean;
 }
 

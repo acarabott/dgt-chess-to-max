@@ -50,7 +50,7 @@ export class BoardBrowser implements DGTBoard {
         return this.write(DGTMessageCode.SendReset);
     }
 
-    async getBoardState(): Promise<Uint8Array | undefined> {
+    async getBoardData(): Promise<Uint8Array | undefined> {
         const didWrite = await this.write(DGTMessageCode.GetBoardState);
         if (!didWrite) {
             return;

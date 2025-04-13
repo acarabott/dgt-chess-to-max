@@ -9,7 +9,7 @@ export const createBoardSimulator = (): DGTBoard => {
     }, 1000 * 3);
 
     return {
-        getBoardState: (): Promise<Uint8Array> => {
+        getBoardData: (): Promise<Uint8Array> => {
             return new Promise((resolve) => resolve(kTestSequence[index]));
         },
         reset(): Promise<boolean> {

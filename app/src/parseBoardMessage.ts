@@ -1,5 +1,6 @@
 import type { Piece, Square } from "chess.js";
 import { SQUARES, Chess } from "chess.js";
+import type { BoardState } from "./api";
 import { DGTChessPiece } from "./api";
 
 const parseDGTPiece = (piece: DGTChessPiece): Piece | undefined => {
@@ -45,7 +46,7 @@ const parseDGTPiece = (piece: DGTChessPiece): Piece | undefined => {
  * @param message - the message from the DGT board
  * @returns a FEN string representing the position on the board
  */
-export const parseBoardMessage = (message: Uint8Array) => {
+export const parseBoardMessage = (message: Uint8Array): BoardState => {
     const encoded = message.slice(3);
 
     if (encoded.length !== SQUARES.length) {

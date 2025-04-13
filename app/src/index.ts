@@ -16,6 +16,9 @@ TODO make UI nice
 TODO what format for lastLegalAscii? 
 TODO button to simulate game
 TODO allow sending parameters from Max
+TODO return error codes, not messages, ui should own messages
+TODO compare board states by Uint8Array, not ascii
+
 */
 
 const main = () => {
@@ -27,6 +30,7 @@ const main = () => {
             ui.addError(message);
             max.sendMessage({
                 ok: false,
+                isGameLegal: false,
                 message,
                 pgn: "",
                 fen: "",
@@ -41,6 +45,7 @@ const main = () => {
             ui.addError(message);
             max.sendMessage({
                 ok: false,
+                isGameLegal: false,
                 message: "Error setting up board, check the Web App",
                 pgn: "",
                 fen: "",

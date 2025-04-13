@@ -87,6 +87,17 @@ export const createUI = (startAction: StartAction): UI => {
     const liveBoardEl = createBoardEl("30px");
     el.appendChild(liveBoardEl);
 
+    const legalEl = document.createElement("div");
+    el.appendChild(legalEl);
+    legalEl.style.background = "red";
+    legalEl.style.color = "white";
+
+    const setLegalState = (isLegal: boolean, message: string) => {
+        legalEl.textContent = message;
+        legalEl.style.display = isLegal ? "none" : "block";
+    };
+    setLegalState(true, "");
+
     const previousLegalBoardEl = createBoardEl("20px");
     el.appendChild(previousLegalBoardEl);
 
@@ -159,6 +170,8 @@ export const createUI = (startAction: StartAction): UI => {
         previousLegalBoardEl.value = prettyPrint(message.gameAscii);
 
         appendMaxMessage(message);
+
+        setLegalState(message.isGameLegal, message.message);
 
         if (!message.ok) {
             let html: HTMLElement | undefined;
