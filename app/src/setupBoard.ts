@@ -1,5 +1,5 @@
 import { Chess } from "chess.js";
-import type { BoardMessage, DGT, LiveBoardState } from "./api";
+import type { BoardMessage, DGT, DGTBoard, LiveBoardState } from "./api";
 import { Signal } from "./Signal";
 import { Board } from "../dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
@@ -13,30 +13,26 @@ export const setupBoard = async (
 ): Promise<DGT | Error> => {
     let shouldTick = true;
 
-    const onSerialPortDisconnect = () => {
-        shouldTick = false;
-        onDisconnect();
-    };
-
-    const board = await (async () => {
+    let board: DGTBoard;
+    {
         if (simulateGame) {
-            return createBoardSimulator();
+            board = createBoardSimulator();
+        } else {
+            const onSerialPortDisconnect = () => {
+                shouldTick = false;
+                onDisconnect();
+            };
+            const serialPortOrError = await createSerialPort(onSerialPortDisconnect);
+            if (serialPortOrError instanceof Error) {
+                return serialPortOrError;
+            }
+            board = new Board(serialPortOrError);
         }
-
-        const serialPort = await createSerialPort(onSerialPortDisconnect);
-        if (serialPort instanceof Error) {
-            return serialPort;
-        }
-        return new Board(serialPort);
-    })();
-
-    if (board instanceof Error) {
-        return board;
     }
 
     await board.reset();
 
-    const boardSignal = new Signal<BoardMessage>();
+    const signal = new Signal<BoardMessage>();
     const game = new Chess();
 
     let previousLiveState: LiveBoardState = {
@@ -51,7 +47,7 @@ export const setupBoard = async (
 
         void handleBoardUpdate(game, board, previousLiveState).then((update) => {
             if (update.message !== undefined) {
-                boardSignal.notify(update.message);
+                signal.notify(update.message);
             }
             if (update.liveState !== undefined) {
                 previousLiveState = update.liveState;
@@ -62,6 +58,6 @@ export const setupBoard = async (
     tick();
 
     return {
-        signal: boardSignal,
+        signal,
     };
 };
