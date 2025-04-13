@@ -18,6 +18,7 @@ TODO button to simulate game
 TODO allow sending parameters from Max
 TODO return error codes, not messages, ui should own messages
 TODO compare board states by Uint8Array, not ascii
+TODO write tests
 
 */
 
