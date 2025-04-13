@@ -30,8 +30,8 @@ const main = () => {
                 message,
                 pgn: "",
                 fen: "",
-                ascii: "",
-                previousLegalAsciiPosition: "",
+                boardAscii: "",
+                gameAscii: "",
             });
         };
 
@@ -44,8 +44,8 @@ const main = () => {
                 message: "Error setting up board, check the Web App",
                 pgn: "",
                 fen: "",
-                ascii: "",
-                previousLegalAsciiPosition: "",
+                boardAscii: "",
+                gameAscii: "",
             });
             return;
         }

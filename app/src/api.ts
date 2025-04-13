@@ -51,8 +51,8 @@ export enum MaxConnectionStatus {
 export interface BoardMessage {
     pgn: string;
     fen: string;
-    ascii: string;
-    previousLegalAsciiPosition: string;
+    boardAscii: string;
+    gameAscii: string;
     message: string;
     ok: boolean;
 }
@@ -84,9 +84,11 @@ export interface Colors {
     fg: string;
 }
 
+export type AddError = (message: string, html?: HTMLElement) => void;
+
 export interface UI {
     el: HTMLElement;
-    addError: (message: string) => void;
+    addError: AddError;
     hideStartButton: () => void;
     boardListener: Listener<BoardMessage>;
     maxConnectionListener: Listener<MaxConnectionStatus>;

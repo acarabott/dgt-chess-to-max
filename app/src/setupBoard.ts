@@ -13,27 +13,11 @@ enum BoardResultType {
     Ignore = "Ignore",
 }
 
-interface BoardResultBase {
+interface BoardResult {
     type: BoardResultType;
-}
-
-interface BoardResultGood extends BoardResultBase {
-    type: BoardResultType.Good;
-    ascii: string;
-}
-
-interface BoardResultBad extends BoardResultBase {
-    type: BoardResultType.Bad;
+    boardAscii: string;
     message: string;
-    ascii: string;
 }
-
-interface BoardResultIgnore extends BoardResultBase {
-    type: BoardResultType.Ignore;
-    ascii: string;
-}
-
-type BoardResult = BoardResultBad | BoardResultGood | BoardResultIgnore;
 
 export const setupBoard = async (
     simulateGame: boolean,
@@ -85,7 +69,7 @@ export const setupBoard = async (
                     return {
                         type: BoardResultType.Bad,
                         message: "Could not read the board. Check the connection.",
-                        ascii: "",
+                        boardAscii: "",
                     };
                 }
             } catch (error: unknown) {
@@ -93,7 +77,7 @@ export const setupBoard = async (
                 return {
                     type: BoardResultType.Bad,
                     message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${errorMessage}`,
-                    ascii: "",
+                    boardAscii: "",
                 };
             }
 
@@ -108,7 +92,8 @@ export const setupBoard = async (
                 haveHandledInitialPosition = true;
                 return {
                     type: BoardResultType.Good,
-                    ascii: boardState.ascii,
+                    boardAscii: boardState.ascii,
+                    message: "",
                 };
             }
 
@@ -117,7 +102,8 @@ export const setupBoard = async (
             if (boardState.ascii === previousLiveAscii) {
                 return {
                     type: BoardResultType.Ignore,
-                    ascii: boardState.ascii,
+                    boardAscii: boardState.ascii,
+                    message: "",
                 };
             }
             previousLiveAscii = boardState.ascii;
@@ -138,7 +124,7 @@ export const setupBoard = async (
                     type: BoardResultType.Bad,
                     message:
                         "Could not generate PGN. Most likely because an illegal move, reset the pieces to match the last legal position.",
-                    ascii: boardState.ascii,
+                    boardAscii: boardState.ascii,
                 };
             }
 
@@ -146,9 +132,10 @@ export const setupBoard = async (
             // ------------------------------------------------------------------------------
             game.move(move);
 
-            const result: BoardResultGood = {
+            const result: BoardResult = {
                 type: BoardResultType.Good,
-                ascii: boardState.ascii,
+                boardAscii: boardState.ascii,
+                message: "",
             };
 
             return result;
@@ -157,10 +144,10 @@ export const setupBoard = async (
         const sendBoardMessage = (ok: boolean, message: string) => {
             const boardMessage: BoardMessage = {
                 ok,
-                ascii: boardResult.ascii,
+                boardAscii: boardResult.boardAscii,
+                gameAscii: game.ascii(),
                 pgn: game.pgn(),
                 fen: game.fen(),
-                previousLegalAsciiPosition: game.ascii(),
                 message,
             };
             signal.notify(boardMessage);

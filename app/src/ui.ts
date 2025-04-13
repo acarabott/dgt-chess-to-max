@@ -1,4 +1,4 @@
-import type { BoardMessage, Colors, StartAction, UI } from "./api";
+import type { AddError, BoardMessage, Colors, StartAction, UI } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { kMaxMiraChannel } from "./constants";
 import { prettyPrint } from "./prettyPrint";
@@ -7,7 +7,7 @@ import type { Listener } from "./Signal";
 export const createUI = (startAction: StartAction): UI => {
     const el = document.createElement("div");
 
-    let addError: (message: string) => void;
+    let addError: AddError;
 
     const startEl = document.createElement("button");
     {
@@ -48,7 +48,7 @@ export const createUI = (startAction: StartAction): UI => {
 
         let previousMessage = "";
         let repeatedMessageCount = 0;
-        addError = (message) => {
+        addError = (message, html) => {
             if (message === previousMessage && errorListEl.lastChild !== null) {
                 errorListEl.removeChild(errorListEl.lastChild);
                 repeatedMessageCount++;
@@ -61,7 +61,12 @@ export const createUI = (startAction: StartAction): UI => {
             const now = new Date().toUTCString();
             const count = repeatedMessageCount === 0 ? "" : ` (${repeatedMessageCount})`;
             const error = `${now}: ${message}${count}`;
-            li.textContent = error;
+            const messageEl = document.createElement("div");
+            li.appendChild(messageEl);
+            messageEl.textContent = error;
+            if (html !== undefined) {
+                li.appendChild(html);
+            }
             errorListEl.prepend(li);
             clearErrorsEl.style.display = "block";
 
@@ -150,13 +155,40 @@ export const createUI = (startAction: StartAction): UI => {
     };
 
     const boardListener: Listener<BoardMessage> = (message) => {
-        liveBoardEl.value = prettyPrint(message.ascii);
-        previousLegalBoardEl.value = prettyPrint(message.previousLegalAsciiPosition);
+        liveBoardEl.value = prettyPrint(message.boardAscii);
+        previousLegalBoardEl.value = prettyPrint(message.gameAscii);
 
         appendMaxMessage(message);
 
         if (!message.ok) {
-            addError(message.message);
+            let html: HTMLElement | undefined;
+            const createEl = (title: string, ascii: string) => {
+                if (ascii.trim().length === 0) {
+                    return undefined;
+                }
+                const boardEl = document.createElement("pre");
+                boardEl.textContent = `${title}:\n ${prettyPrint(ascii)}`;
+                return boardEl;
+            };
+
+            const gameEl = createEl("Game", message.gameAscii);
+            const boardEl = createEl("Board", message.boardAscii);
+
+            if (gameEl !== undefined || boardEl !== undefined) {
+                const containerEl = document.createElement("div");
+                containerEl.style.display = "flex";
+                containerEl.style.flexDirection = "row";
+                if (gameEl !== undefined) {
+                    containerEl.appendChild(gameEl);
+                }
+                if (boardEl !== undefined) {
+                    containerEl.appendChild(boardEl);
+                }
+
+                html = containerEl;
+            }
+
+            addError(message.message, html);
         }
     };
 
