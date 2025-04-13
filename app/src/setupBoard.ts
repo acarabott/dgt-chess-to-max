@@ -88,10 +88,17 @@ export const setupBoard = async (
             // checking ASCII for initial state, not FEN because FEN can have some slight variations
             // depending on how it was generated (from initial DGT board state or initial Chess instance)
             const isInitialPosition = boardState.ascii === kInitialAscii;
-            if (!haveHandledInitialPosition && isInitialPosition) {
-                haveHandledInitialPosition = true;
+            if (isInitialPosition) {
+                if (!haveHandledInitialPosition) {
+                    haveHandledInitialPosition = true;
+                    return {
+                        type: BoardResultType.Good,
+                        boardAscii: boardState.ascii,
+                        message: "",
+                    };
+                }
                 return {
-                    type: BoardResultType.Good,
+                    type: BoardResultType.Ignore,
                     boardAscii: boardState.ascii,
                     message: "",
                 };
@@ -111,19 +118,19 @@ export const setupBoard = async (
             // Check if the move was legal
             // ------------------------------------------------------------------------------
             const getPosition = (fen: string) => fen.split(" ")[0];
-            const currentPosition = getPosition(game.fen());
+            const boardPosition = getPosition(boardState.fen);
             const move = game.moves().find((findMove) => {
                 const tempGame = new Chess(game.fen());
                 tempGame.move(findMove);
-                const movePositions = getPosition(tempGame.fen());
-                return movePositions === currentPosition;
+                const movePosition = getPosition(tempGame.fen());
+                return movePosition === boardPosition;
             });
 
             if (move === undefined) {
                 return {
                     type: BoardResultType.Bad,
                     message:
-                        "Could not generate PGN. Most likely because an illegal move, reset the pieces to match the last legal position.",
+                        "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.",
                     boardAscii: boardState.ascii,
                 };
             }

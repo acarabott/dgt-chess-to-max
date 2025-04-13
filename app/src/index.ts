@@ -5,10 +5,10 @@ import { setupBoard } from "./setupBoard";
 import type { StartAction } from "./api";
 
 /*
-TODO fix pgn error
+TODO separate signal for illegal moves
 
+TODO start game button?
 TODO keyboard handling
-TODO error handling
 TODO web server startup
 TODO deploy to website
 TODO convert to Node?
