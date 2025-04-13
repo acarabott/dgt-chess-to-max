@@ -54,7 +54,7 @@ export interface BoardState {
 }
 
 export interface LiveBoardState {
-    ascii: string;
+    boardAscii: string;
     isGameLegal: boolean;
 }
 

@@ -5,8 +5,7 @@ import { setupBoard } from "./setupBoard";
 import type { StartAction } from "./api";
 
 /*
-TODO separate signal for illegal moves
-
+TODO add latest PGN move to message
 TODO start game button?
 TODO keyboard handling
 TODO web server startup

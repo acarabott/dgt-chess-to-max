@@ -51,19 +51,20 @@ export const handleBoardUpdate = async (
             return update;
         }
     }
+    const boardAscii = boardState.ascii;
 
     // Check if the game has started
     // ------------------------------------------------------------------------------
-    const isGameStart = boardState.ascii === kInitialAscii && game.history().length === 0;
+    const isGameStart = boardAscii === kInitialAscii && game.history().length === 0;
     if (isGameStart) {
         const update: BoardUpdate = {
             liveState: {
-                ascii: boardState.ascii,
+                boardAscii,
                 isGameLegal: true,
             },
             message: {
                 ok: true,
-                boardAscii: boardState.ascii,
+                boardAscii,
                 isGameLegal: true,
                 ...gameState,
                 message: "",
@@ -74,16 +75,16 @@ export const handleBoardUpdate = async (
 
     // Check if live state of the board has changed
     // ------------------------------------------------------------------------------
-    const hasBoardChanged = boardState.ascii !== previousLiveState.ascii;
+    const hasBoardChanged = boardAscii !== previousLiveState.boardAscii;
     if (!hasBoardChanged) {
-        const isGameLegal = boardState.ascii === game.ascii();
+        const isGameLegal = boardAscii === gameState.gameAscii;
         const hasLegalChanged = isGameLegal !== previousLiveState.isGameLegal;
 
         let message: BoardMessage | undefined = undefined;
         if (hasLegalChanged) {
             message = {
                 ok: true,
-                boardAscii: boardState.ascii,
+                boardAscii,
                 isGameLegal,
                 message: "",
                 ...gameState,
@@ -93,7 +94,7 @@ export const handleBoardUpdate = async (
         const update: BoardUpdate = {
             message,
             liveState: {
-                ascii: boardState.ascii,
+                boardAscii,
                 isGameLegal,
             },
         };
@@ -112,20 +113,20 @@ export const handleBoardUpdate = async (
         return movePosition === boardPosition;
     });
 
-    const moveIsLegal = move !== undefined;
+    const isGameLegal = move !== undefined;
 
     const liveState: LiveBoardState = {
-        ascii: boardState.ascii,
-        isGameLegal: moveIsLegal,
+        boardAscii,
+        isGameLegal,
     };
 
-    if (!moveIsLegal) {
+    if (!isGameLegal) {
         const update: BoardUpdate = {
             liveState,
             message: {
                 ok: true,
                 isGameLegal: false,
-                boardAscii: boardState.ascii,
+                boardAscii,
                 message:
                     "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.",
                 ...gameState,
@@ -140,12 +141,12 @@ export const handleBoardUpdate = async (
 
     const update: BoardUpdate = {
         liveState: {
-            ascii: boardState.ascii,
+            boardAscii,
             isGameLegal: true,
         },
         message: {
             ok: true,
-            boardAscii: boardState.ascii,
+            boardAscii,
             isGameLegal: true,
             ...gameState,
             message: "",
