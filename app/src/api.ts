@@ -53,6 +53,11 @@ export interface BoardState {
     ascii: string;
 }
 
+export interface LiveBoardState {
+    ascii: string;
+    isGameLegal: boolean;
+}
+
 export interface BoardMessage {
     pgn: string;
     fen: string;
@@ -63,6 +68,11 @@ export interface BoardMessage {
     ok: boolean;
 }
 
+export interface BoardUpdate {
+    message: BoardMessage | undefined;
+    liveState: LiveBoardState | undefined;
+}
+
 export interface Max {
     getConnectionStatus: () => MaxConnectionStatus;
     connectionStatusSignal: Signal<MaxConnectionStatus>;
@@ -71,7 +81,6 @@ export interface Max {
 
 export interface DGT {
     signal: Signal<BoardMessage>;
-    // initialMessage: BoardMessage;
 }
 
 export interface AppContext {
