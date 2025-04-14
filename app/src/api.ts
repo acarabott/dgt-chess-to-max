@@ -55,7 +55,6 @@ export interface BoardState {
 }
 
 export interface LiveBoardState {
-    boardEncoded: Uint8Array;
     isGameLegal: boolean;
 }
 
@@ -72,17 +71,10 @@ export interface BoardMessage {
 }
 
 export interface BoardUpdate {
-    result:
-        | {
-              move: string | undefined;
-              boardEncoded: Uint8Array;
-              boardAscii: string;
-              message: string;
-              isGameLegal: boolean;
-              ok: boolean;
-          }
-        | undefined;
-    liveState: LiveBoardState | undefined;
+    ok: boolean;
+    move: string | undefined;
+    isGameLegal: boolean;
+    message: string;
 }
 
 export interface Max {

@@ -20,12 +20,10 @@ export const handleBoardUpdate = (
         }
 
         const update: BoardUpdate = {
-            result: {
-                ok: true,
-                isGameLegal: true, // true because we should not be checking moves
-                message: "",
-                move: undefined,
-            },
+            ok: true,
+            isGameLegal: true, // true because we should not be checking moves
+            message: "",
+            move: undefined,
         };
         return update;
     }
@@ -44,13 +42,11 @@ export const handleBoardUpdate = (
 
     if (move === undefined) {
         const update: BoardUpdate = {
-            result: {
-                ok: true,
-                isGameLegal: false,
-                move: undefined,
-                message:
-                    "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.",
-            },
+            ok: true,
+            isGameLegal: false,
+            move: undefined,
+            message:
+                "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.",
         };
         return update;
     }
@@ -58,12 +54,10 @@ export const handleBoardUpdate = (
     // Make the move
     // ------------------------------------------------------------------------------
     const update: BoardUpdate = {
-        result: {
-            ok: true,
-            move,
-            isGameLegal: true,
-            message: "",
-        },
+        ok: true,
+        move,
+        isGameLegal: true,
+        message: "",
     };
 
     return update;

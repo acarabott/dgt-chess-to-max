@@ -87,28 +87,26 @@ export const setupBoard = async (
             return;
         }
 
-        if (update.result !== undefined) {
-            if (update.result.move !== undefined) {
-                game.move(update.result.move);
-                shouldCheckMove = false;
-            }
-
-            if (!update.result.isGameLegal) {
-                shouldCheckMove = false;
-            }
-            const message: BoardMessage = {
-                ok: update.result.ok,
-                newMovePgn: update.result.move ?? "",
-                message: update.result.message,
-                isGameLegal: update.result.isGameLegal,
-                boardAscii: boardState.ascii,
-                boardEncoded: boardState.encoded,
-                fullPgn: game.pgn(),
-                gameAscii: game.ascii(),
-                fen: game.fen(),
-            };
-            boardSignal.notify(message);
+        if (update.move !== undefined) {
+            game.move(update.move);
+            shouldCheckMove = false;
         }
+
+        if (!update.isGameLegal) {
+            shouldCheckMove = false;
+        }
+        const message: BoardMessage = {
+            ok: update.ok,
+            newMovePgn: update.move ?? "",
+            message: update.message,
+            isGameLegal: update.isGameLegal,
+            boardAscii: boardState.ascii,
+            boardEncoded: boardState.encoded,
+            fullPgn: game.pgn(),
+            gameAscii: game.ascii(),
+            fen: game.fen(),
+        };
+        boardSignal.notify(message);
 
         previousBoardEncoded = boardState.encoded;
     };
