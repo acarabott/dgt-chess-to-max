@@ -1,8 +1,8 @@
-import type { Signal } from "./Signal";
+import type { Listener, Signal } from "./Signal";
 
 export interface DGTBoard {
     reset(): Promise<boolean>;
-    getBoardState(): Promise<Uint8Array | undefined>;
+    getBoardData(): Promise<Uint8Array | undefined>;
     getSerialNumber(): Promise<string | undefined>;
     getVersion(): Promise<string | undefined>;
     close(): Promise<void>;
@@ -48,23 +48,61 @@ export enum MaxConnectionStatus {
     Disconnected = "Disconnected",
 }
 
-export interface MaxMessage {
-    pgn: string;
-    timestamp: number;
+export interface BoardState {
+    encoded: Uint8Array;
+    fen: string;
+    ascii: string;
+}
+
+export interface LiveBoardState {
+    isGameLegal: boolean;
+}
+
+export interface BoardMessage {
+    fullPgn: string;
+    newMovePgn: string;
+    fen: string;
+    boardEncoded: Uint8Array;
+    boardAscii: string;
+    gameAscii: string;
+    message: string;
+    isGameLegal: boolean;
+    ok: boolean;
 }
 
 export interface Max {
     getConnectionStatus: () => MaxConnectionStatus;
     connectionStatusSignal: Signal<MaxConnectionStatus>;
-    sendMessage: (message: MaxMessage) => void;
+    sendMessage: (message: BoardMessage) => void;
 }
 
 export interface DGT {
-    asciiSignal: Signal<string>;
-    pgnSignal: Signal<string>;
+    boardSignal: Signal<BoardMessage>;
+    disconnectSignal: Signal<void>;
 }
 
 export interface AppContext {
     max: Max;
     dgt: DGT;
+}
+
+export const kDGTFilter: SerialPortFilter = {
+    usbVendorId: 1240,
+    usbProductId: 10,
+};
+
+export type StartAction = () => void | Promise<void>;
+export interface Colors {
+    bg: string;
+    fg: string;
+}
+
+export type AddError = (message: string, html?: HTMLElement) => void;
+
+export interface UI {
+    el: HTMLElement;
+    addError: AddError;
+    hideStartButton: () => void;
+    boardListener: Listener<BoardMessage>;
+    maxConnectionListener: Listener<MaxConnectionStatus>;
 }

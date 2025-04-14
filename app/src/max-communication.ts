@@ -1,9 +1,10 @@
 import * as Xebra from "xebra.js";
-import { Signal } from "./signal";
-import type { Max, MaxMessage } from "./api";
+import { Signal } from "./Signal";
+import type { BoardMessage, Max } from "./api";
 import { MaxConnectionStatus } from "./api";
+import { kMaxReconnectionInterval_ms } from "./constants";
 
-export const setupMax = (): Max => {
+export const setupMax = (miraChannelName: string): Max => {
     const xebraState = new Xebra.State({
         hostname: "127.0.0.1",
         port: 8086,
@@ -31,9 +32,6 @@ export const setupMax = (): Max => {
                     return MaxConnectionStatus.Reconnecting;
                 }
                 case Xebra.CONNECTION_STATES.DISCONNECTED: {
-                    setTimeout(() => {
-                        xebraState.connect();
-                    }, 1000 * 3);
                     return MaxConnectionStatus.Disconnected;
                 }
                 default: {
@@ -43,10 +41,18 @@ export const setupMax = (): Max => {
         })();
         connectionStatus = status;
         connectionStatusSignal.notify(status);
+        if (
+            status === MaxConnectionStatus.Disconnected ||
+            status === MaxConnectionStatus.ConnectionFailed
+        ) {
+            setTimeout(() => {
+                xebraState.connect();
+            }, kMaxReconnectionInterval_ms);
+        }
     });
 
-    const messageQueue: Readonly<MaxMessage>[] = [];
-    const sendMessage = (message: MaxMessage) => {
+    const messageQueue: Readonly<BoardMessage>[] = [];
+    const sendMessage = (message: BoardMessage) => {
         messageQueue.push(message);
 
         if (xebraState.connectionState !== Xebra.CONNECTION_STATES.CONNECTED) {
@@ -57,7 +63,7 @@ export const setupMax = (): Max => {
             const queueMessage = messageQueue.shift();
             if (queueMessage !== undefined) {
                 const serialized = JSON.stringify(message);
-                xebraState.sendMessageToChannel("pgn", serialized);
+                xebraState.sendMessageToChannel(miraChannelName, serialized);
             }
         }
     };

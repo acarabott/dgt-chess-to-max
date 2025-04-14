@@ -1,62 +1,142 @@
+import type { Color, Chess } from "chess.js";
+import type { BoardMessage, BoardState, DGT, DGTBoard } from "./api";
+import { Signal } from "./Signal";
+import { Board } from "../dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
-import { createPGN } from "./createPGN";
-import { kInitialAscii } from "./kInitialAscii";
+import { createSerialPort } from "./createSerialPort";
 import { parseBoardMessage } from "./parseBoardMessage";
-import { Signal } from "./signal";
+import { arrayEqual } from "../lib/arrayEqual";
+import { findMove } from "./findMove";
 
-export const setupBoard = (_isMock: boolean) => {
-    const pollInterval_ms = 100;
+export const setupBoard = async (
+    game: Chess,
+    simulateBoard: boolean,
+    pollInterval_ms: number,
+    moveKeyPressedSignal: Signal<Color>,
+): Promise<DGT | Error> => {
+    let shouldTick = true;
+    let previousBoardEncoded = new Uint8Array();
+    let playerHasIndicatedMove = false;
+    moveKeyPressedSignal.listen((color) => {
+        if (color === game.turn()) {
+            playerHasIndicatedMove = true;
+        }
+    });
 
-    const board = createBoardSimulator();
-    const asciiSignal = new Signal<string>();
-    const pgnSignal = new Signal<string>();
+    const disconnectSignal = new Signal<void>();
+    const boardSignal = new Signal<BoardMessage>();
 
-    const fens: string[] = [];
+    let board: DGTBoard;
+    {
+        if (simulateBoard) {
+            board = createBoardSimulator();
+        } else {
+            const onSerialPortDisconnect = () => {
+                shouldTick = false;
+                disconnectSignal.notify();
+            };
+            const serialPortOrError = await createSerialPort(onSerialPortDisconnect);
+            if (serialPortOrError instanceof Error) {
+                return serialPortOrError;
+            }
+            board = new Board(serialPortOrError);
+        }
+    }
+
+    await board.reset();
 
     const tick = async () => {
-        setTimeout(() => void tick(), pollInterval_ms);
+        // schedule next tick as long as still connected
+        // ------------------------------------------------------------------------------
+        if (shouldTick) {
+            setTimeout(() => tick(), pollInterval_ms);
+        }
 
-        let boardState: Uint8Array;
+        // read the current state of the board
+        // ------------------------------------------------------------------------------
+        let boardState: BoardState | undefined;
+        let extraError = "";
         try {
-            boardState = await board.getBoardState();
+            const boardData = await board.getBoardData();
+            if (boardData !== undefined) {
+                boardState = parseBoardMessage(boardData);
+            }
         } catch (error: unknown) {
-            // eslint-disable-next-line no-console
-            console.error("Error getting position from board:", error);
-            return;
+            extraError = error instanceof Error ? error.message : JSON.stringify(error);
         }
 
-        const { ascii, fen } = parseBoardMessage(boardState);
-        if (ascii === kInitialAscii) {
-            // checking ASCII here, not FEN because FEN can have some slight variations
-            // depending on how it was generated (from initial board state or iniitial Chess)
-            return;
+        // report the error if we couldn't read the board state
+        // ------------------------------------------------------------------------------
+        if (boardState === undefined) {
+            const boardMessage: BoardMessage = {
+                ok: false,
+                newMovePgn: "",
+                message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${extraError}`,
+                isGameLegal: false,
+                boardAscii: "",
+                boardEncoded: new Uint8Array(),
+                fullPgn: game.pgn(),
+                gameAscii: game.ascii(),
+                fen: game.fen(),
+            };
+            boardSignal.notify(boardMessage);
+            return undefined;
         }
 
-        const previousFen = fens[fens.length - 1];
-        if (fen === previousFen) {
-            return;
+        // check if the board has changed, and whether the move was legal or not
+        // ------------------------------------------------------------------------------
+        let newMovePgn: string;
+        let message: string;
+        let isGameLegal: boolean;
+        if (playerHasIndicatedMove) {
+            // if the player has indicated a move, we *always* check it
+            // even if the board hasn't changed, as this would be an illegal move
+            playerHasIndicatedMove = false;
+
+            const move = findMove(game.fen(), boardState.fen);
+            if (move !== undefined) {
+                game.move(move);
+
+                newMovePgn = move;
+                message = "";
+                isGameLegal = true;
+            } else {
+                newMovePgn = "";
+                message =
+                    "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.";
+                isGameLegal = false;
+            }
+        } else {
+            // when the player has not indicated a move, and the board has not changed, ignore
+            const boardIsTheSame = arrayEqual(previousBoardEncoded, boardState.encoded);
+            if (boardIsTheSame) {
+                return;
+            }
+            newMovePgn = "";
+            message = "";
+            isGameLegal = true;
         }
 
-        asciiSignal.notify(ascii);
+        const boardMessage: BoardMessage = {
+            ok: true,
+            newMovePgn,
+            message,
+            isGameLegal,
+            boardAscii: boardState.ascii,
+            boardEncoded: boardState.encoded,
+            fullPgn: game.pgn(),
+            gameAscii: game.ascii(),
+            fen: game.fen(),
+        };
+        boardSignal.notify(boardMessage);
 
-        fens.push(fen);
-        const pgn = createPGN(fens);
-        if (pgn.length === 0) {
-            return;
-        }
-
-        try {
-            pgnSignal.notify(pgn);
-        } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error("Error sending PGN:", error);
-        }
+        previousBoardEncoded = boardState.encoded;
     };
 
     void tick();
 
     return {
-        asciiSignal,
-        pgnSignal,
+        boardSignal,
+        disconnectSignal,
     };
 };

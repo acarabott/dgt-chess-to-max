@@ -50,7 +50,7 @@ export class BoardBrowser implements DGTBoard {
         return this.write(DGTMessageCode.SendReset);
     }
 
-    async getBoardState(): Promise<Uint8Array | undefined> {
+    async getBoardData(): Promise<Uint8Array | undefined> {
         const didWrite = await this.write(DGTMessageCode.GetBoardState);
         if (!didWrite) {
             return;
@@ -90,6 +90,11 @@ export class BoardBrowser implements DGTBoard {
     }
 
     async write(messageCode: DGTMessageCode): Promise<boolean> {
+        if ((this.port.writable as SerialPort["writable"] | null) === null) {
+            console.error("serial port is not writable")
+            return false;
+        }
+
         try {
             await this.port.writable.getWriter().write(new Uint8Array([messageCode]));
             return true;
