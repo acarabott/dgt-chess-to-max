@@ -1,10 +1,11 @@
 import type { Color, Chess } from "chess.js";
-import type { BoardMessage, DGT, DGTBoard, LiveBoardState } from "./api";
+import type { BoardMessage, BoardState, DGT, DGTBoard, LiveBoardState } from "./api";
 import { Signal } from "./Signal";
 import { Board } from "../dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
 import { createSerialPort } from "./createSerialPort";
 import { handleBoardUpdate } from "./handleBoardUpdate";
+import { parseBoardMessage } from "./parseBoardMessage";
 
 // Important that this has a "null-like" initial state.
 // If it is initialized to the chess starting position,
@@ -22,10 +23,17 @@ export const setupBoard = async (
     pollInterval_ms: number,
     moveKeyPressedSignal: Signal<Color>,
 ): Promise<DGT | Error> => {
+    let shouldTick = true;
+    let previousLiveState = kInitialLiveBoardState;
+    let shouldCheckMove = false;
+    moveKeyPressedSignal.listen((color) => {
+        if (color === game.turn()) {
+            shouldCheckMove = true;
+        }
+    });
+
     const disconnectSignal = new Signal<void>();
     const boardSignal = new Signal<BoardMessage>();
-
-    let shouldTick = true;
 
     let board: DGTBoard;
     {
@@ -46,56 +54,78 @@ export const setupBoard = async (
 
     await board.reset();
 
-    let previousLiveState = kInitialLiveBoardState;
-    let shouldCheckMove = false;
-    moveKeyPressedSignal.listen((color) => {
-        if (color === game.turn()) {
-            shouldCheckMove = true;
-        }
-    });
-
-    const tick = () => {
+    const tick = async () => {
         if (shouldTick) {
             setTimeout(() => tick(), pollInterval_ms);
         }
 
-        void handleBoardUpdate(game.fen(), board, shouldCheckMove, previousLiveState).then(
-            (update) => {
-                if (update === undefined) {
-                    return;
-                }
+        let boardState: BoardState | undefined;
+        let extraError = "";
+        try {
+            const boardData = await board.getBoardData();
+            if (boardData !== undefined) {
+                boardState = parseBoardMessage(boardData);
+            }
+        } catch (error: unknown) {
+            extraError = error instanceof Error ? error.message : JSON.stringify(error);
+        }
 
-                if (update.result !== undefined) {
-                    if (update.result.move !== undefined) {
-                        game.move(update.result.move);
-                        shouldCheckMove = false;
-                    }
+        if (boardState === undefined) {
+            const boardMessage: BoardMessage = {
+                ok: false,
+                newMovePgn: "",
+                message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${extraError}`,
+                isGameLegal: false,
+                boardAscii: "",
+                boardEncoded: new Uint8Array(),
+                fullPgn: game.pgn(),
+                gameAscii: game.ascii(),
+                fen: game.fen(),
+            };
+            boardSignal.notify(boardMessage);
+            return undefined;
+        }
 
-                    if (!update.result.isGameLegal) {
-                        shouldCheckMove = false;
-                    }
-                    const message: BoardMessage = {
-                        ok: update.result.ok,
-                        newMovePgn: update.result.move ?? "",
-                        message: update.result.message,
-                        isGameLegal: update.result.isGameLegal,
-                        boardAscii: update.result.boardAscii,
-                        boardEncoded: update.result.boardEncoded,
-                        fullPgn: game.pgn(),
-                        gameAscii: game.ascii(),
-                        fen: game.fen(),
-                    };
-                    boardSignal.notify(message);
-                }
-
-                if (update.liveState !== undefined) {
-                    previousLiveState = update.liveState;
-                }
-            },
+        const update = handleBoardUpdate(
+            game.fen(),
+            boardState,
+            shouldCheckMove,
+            previousLiveState,
         );
+
+        if (update === undefined) {
+            return;
+        }
+
+        if (update.result !== undefined) {
+            if (update.result.move !== undefined) {
+                game.move(update.result.move);
+                shouldCheckMove = false;
+            }
+
+            if (!update.result.isGameLegal) {
+                shouldCheckMove = false;
+            }
+            const message: BoardMessage = {
+                ok: update.result.ok,
+                newMovePgn: update.result.move ?? "",
+                message: update.result.message,
+                isGameLegal: update.result.isGameLegal,
+                boardAscii: update.result.boardAscii,
+                boardEncoded: update.result.boardEncoded,
+                fullPgn: game.pgn(),
+                gameAscii: game.ascii(),
+                fen: game.fen(),
+            };
+            boardSignal.notify(message);
+        }
+
+        if (update.liveState !== undefined) {
+            previousLiveState = update.liveState;
+        }
     };
 
-    tick();
+    void tick();
 
     return {
         boardSignal,

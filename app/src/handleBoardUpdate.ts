@@ -1,52 +1,13 @@
 import { Chess } from "chess.js";
-import type { BoardState, DGTBoard, LiveBoardState, BoardUpdate } from "./api";
-import { parseBoardMessage } from "./parseBoardMessage";
+import type { BoardState, LiveBoardState, BoardUpdate } from "./api";
 import { arrayEqual } from "../lib/arrayEqual";
 
-export const handleBoardUpdate = async (
+export const handleBoardUpdate = (
     gameFen: string,
-    board: DGTBoard,
+    boardState: Readonly<BoardState>,
     shouldCheckMove: boolean,
     previousLiveState: LiveBoardState,
-): Promise<BoardUpdate | undefined> => {
-    // read the state from the board
-    // ------------------------------------------------------------------------------
-    let boardState: BoardState;
-    {
-        try {
-            const boardData = await board.getBoardData();
-            if (boardData === undefined) {
-                const update: BoardUpdate = {
-                    liveState: undefined,
-                    result: {
-                        ok: false,
-                        isGameLegal: false,
-                        boardAscii: "",
-                        move: undefined,
-                        boardEncoded: new Uint8Array(),
-                        message: "Could not read the board. Check the connection.",
-                    },
-                };
-                return update;
-            }
-
-            boardState = parseBoardMessage(boardData);
-        } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-            const update: BoardUpdate = {
-                liveState: undefined,
-                result: {
-                    ok: false,
-                    isGameLegal: false,
-                    message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${errorMessage}`,
-                    boardAscii: "",
-                    move: undefined,
-                    boardEncoded: new Uint8Array(),
-                },
-            };
-            return update;
-        }
-    }
+): BoardUpdate | undefined => {
     const boardAscii = boardState.ascii;
     const boardEncoded = boardState.encoded;
 
@@ -69,9 +30,9 @@ export const handleBoardUpdate = async (
                 ok: true,
                 isGameLegal,
                 message: "",
-                boardAscii: boardState.ascii,
+                boardAscii,
                 move: undefined,
-                boardEncoded: boardState.encoded,
+                boardEncoded,
             },
         };
         return update;
