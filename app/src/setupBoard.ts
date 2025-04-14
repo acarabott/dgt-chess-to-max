@@ -1,5 +1,4 @@
-import type { Color } from "chess.js";
-import { Chess } from "chess.js";
+import type { Color, Chess } from "chess.js";
 import type { BoardMessage, DGT, DGTBoard, LiveBoardState } from "./api";
 import { Signal } from "./Signal";
 import { Board } from "../dgt/Board";
@@ -18,13 +17,13 @@ const kInitialLiveBoardState: LiveBoardState = {
 } as const;
 
 export const setupBoard = async (
+    game: Chess,
     simulateBoard: boolean,
     pollInterval_ms: number,
     moveKeyPressedSignal: Signal<Color>,
 ): Promise<DGT | Error> => {
     const disconnectSignal = new Signal<void>();
     const boardSignal = new Signal<BoardMessage>();
-    const game = new Chess();
 
     let shouldTick = true;
 
@@ -60,22 +59,40 @@ export const setupBoard = async (
             setTimeout(() => tick(), pollInterval_ms);
         }
 
-        void handleBoardUpdate(game, board, shouldCheckMove, previousLiveState).then((update) => {
-            if (update === undefined) {
-                return;
-            }
-
-            if (update.message !== undefined) {
-                if (update.message.newMovePgn !== "" || !update.message.isGameLegal) {
-                    shouldCheckMove = false;
+        void handleBoardUpdate(game.fen(), board, shouldCheckMove, previousLiveState).then(
+            (update) => {
+                if (update === undefined) {
+                    return;
                 }
-                boardSignal.notify(update.message);
-            }
 
-            if (update.liveState !== undefined) {
-                previousLiveState = update.liveState;
-            }
-        });
+                if (update.result !== undefined) {
+                    if (update.result.move !== undefined) {
+                        game.move(update.result.move);
+                        shouldCheckMove = false;
+                    }
+
+                    if (!update.result.isGameLegal) {
+                        shouldCheckMove = false;
+                    }
+                    const message: BoardMessage = {
+                        ok: update.result.ok,
+                        newMovePgn: update.result.move ?? "",
+                        message: update.result.message,
+                        isGameLegal: update.result.isGameLegal,
+                        boardAscii: update.result.boardAscii,
+                        boardEncoded: update.result.boardEncoded,
+                        fullPgn: game.pgn(),
+                        gameAscii: game.ascii(),
+                        fen: game.fen(),
+                    };
+                    boardSignal.notify(message);
+                }
+
+                if (update.liveState !== undefined) {
+                    previousLiveState = update.liveState;
+                }
+            },
+        );
     };
 
     tick();

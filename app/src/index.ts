@@ -4,6 +4,7 @@ import { kDGTPollInterval_ms, kMaxMiraChannel } from "./constants";
 import { setupBoard } from "./setupBoard";
 import type { StartAction } from "./api";
 import { setupKeyboard } from "./setupKeyboard";
+import { Chess } from "chess.js";
 
 /*
 TODO edge case: making illegal move by not moving anything
@@ -24,6 +25,8 @@ TODO clean up file structure
 */
 
 const main = () => {
+    const game = new Chess();
+
     const max = setupMax(kMaxMiraChannel);
 
     const moveKeyPressedSignal = setupKeyboard();
@@ -44,7 +47,7 @@ const main = () => {
             });
         };
 
-        const dgtBoard = await setupBoard(false, kDGTPollInterval_ms, moveKeyPressedSignal);
+        const dgtBoard = await setupBoard(game, false, kDGTPollInterval_ms, moveKeyPressedSignal);
         if (dgtBoard instanceof Error) {
             handleError(dgtBoard.message);
             return;

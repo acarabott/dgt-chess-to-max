@@ -72,7 +72,16 @@ export interface BoardMessage {
 }
 
 export interface BoardUpdate {
-    message: BoardMessage | undefined;
+    result:
+        | {
+              move: string | undefined;
+              boardEncoded: Uint8Array;
+              boardAscii: string;
+              message: string;
+              isGameLegal: boolean;
+              ok: boolean;
+          }
+        | undefined;
     liveState: LiveBoardState | undefined;
 }
 
