@@ -3,7 +3,7 @@ import type { BoardState, BoardMessage, DGTBoard, LiveBoardState, BoardUpdate } 
 import { parseBoardMessage } from "./parseBoardMessage";
 import { arrayEqual } from "../lib/arrayEqual";
 
-type GameState = Pick<BoardMessage, "gameAscii" | "fen" | "pgn">;
+type GameState = Pick<BoardMessage, "gameAscii" | "fen" | "fullPgn">;
 
 export const handleBoardUpdate = async (
     game: Chess,
@@ -12,7 +12,7 @@ export const handleBoardUpdate = async (
 ): Promise<BoardUpdate> => {
     const gameState: GameState = {
         gameAscii: game.ascii(),
-        pgn: game.pgn(),
+        fullPgn: game.pgn(),
         fen: game.fen(),
     };
     // read the state from the board
@@ -28,6 +28,7 @@ export const handleBoardUpdate = async (
                         ok: false,
                         isGameLegal: false,
                         boardAscii: "",
+                        newMovePgn: "",
                         boardEncoded: new Uint8Array(),
                         message: "Could not read the board. Check the connection.",
                         ...gameState,
@@ -46,6 +47,7 @@ export const handleBoardUpdate = async (
                     isGameLegal: false,
                     message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${errorMessage}`,
                     boardAscii: "",
+                    newMovePgn: "",
                     boardEncoded: new Uint8Array(),
                     ...gameState,
                 },
@@ -62,7 +64,7 @@ export const handleBoardUpdate = async (
     if (boardHasNotChanged) {
         const isGameLegal = boardAscii === gameState.gameAscii;
         const hasLegalChanged = isGameLegal !== previousLiveState.isGameLegal;
-
+       
         let message: BoardMessage | undefined = undefined;
         if (hasLegalChanged) {
             message = {
@@ -70,6 +72,7 @@ export const handleBoardUpdate = async (
                 boardAscii,
                 boardEncoded,
                 isGameLegal,
+                newMovePgn: "",
                 message: "",
                 ...gameState,
             };
@@ -86,18 +89,20 @@ export const handleBoardUpdate = async (
         return update;
     }
 
+    
+
     // Check if the move was legal
     // ------------------------------------------------------------------------------
     const getPosition = (fen: string) => fen.split(" ")[0];
     const boardPosition = getPosition(boardState.fen);
-    const move = game.moves().find((findMove) => {
+    const newMovePgn = game.moves().find((findMove) => {
         const tempGame = new Chess(game.fen());
         tempGame.move(findMove);
         const movePosition = getPosition(tempGame.fen());
         return movePosition === boardPosition;
     });
 
-    const isGameLegal = move !== undefined;
+    const isGameLegal = newMovePgn !== undefined;
 
     const liveState: LiveBoardState = {
         boardEncoded,
@@ -112,6 +117,7 @@ export const handleBoardUpdate = async (
                 isGameLegal: false,
                 boardAscii,
                 boardEncoded,
+                newMovePgn: "",
                 message:
                     "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.",
                 ...gameState,
@@ -122,7 +128,7 @@ export const handleBoardUpdate = async (
 
     // Make the move
     // ------------------------------------------------------------------------------
-    game.move(move);
+    game.move(newMovePgn);
 
     const update: BoardUpdate = {
         liveState: {
@@ -133,6 +139,7 @@ export const handleBoardUpdate = async (
             ok: true,
             boardAscii,
             boardEncoded,
+            newMovePgn,
             isGameLegal: true,
             ...gameState,
             message: "",

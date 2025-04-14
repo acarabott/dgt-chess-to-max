@@ -60,7 +60,8 @@ export interface LiveBoardState {
 }
 
 export interface BoardMessage {
-    pgn: string;
+    fullPgn: string;
+    newMovePgn: string;
     fen: string;
     boardEncoded: Uint8Array;
     boardAscii: string;

@@ -5,18 +5,16 @@ import { setupBoard } from "./setupBoard";
 import type { StartAction } from "./api";
 
 /*
-TODO add latest PGN move to message
-TODO start game button?
 TODO keyboard handling
+TODO fix initial flash of illegal state (first move)
+TODO start game button?
 TODO web server startup
 TODO deploy to website
 TODO convert to Node?
 TODO make UI nice
-TODO what format for lastLegalAscii? 
+TODO remove kInitialAscii?
 TODO button to simulate game
-TODO allow sending parameters from Max
 TODO return error codes, not messages, ui should own messages
-TODO compare board states by Uint8Array, not ascii
 TODO write tests
 
 */
@@ -32,11 +30,12 @@ const main = () => {
                 ok: false,
                 isGameLegal: false,
                 message,
-                pgn: "",
+                fullPgn: "",
                 fen: "",
                 boardAscii: "",
                 boardEncoded: new Uint8Array(),
                 gameAscii: "",
+                newMovePgn: "",
             });
         };
 
@@ -48,11 +47,12 @@ const main = () => {
                 ok: false,
                 isGameLegal: false,
                 message: "Error setting up board, check the Web App",
-                pgn: "",
+                fullPgn: "",
                 fen: "",
                 boardAscii: "",
                 boardEncoded: new Uint8Array(),
                 gameAscii: "",
+                newMovePgn: "",
             });
             return;
         }
