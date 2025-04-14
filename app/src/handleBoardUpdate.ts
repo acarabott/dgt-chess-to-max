@@ -1,6 +1,6 @@
-import { Chess } from "chess.js";
 import type { BoardState, BoardUpdate } from "./api";
 import { arrayEqual } from "../lib/arrayEqual";
+import { findMove } from "./findMove";
 
 export const handleBoardUpdate = (
     gameFen: string,
@@ -29,16 +29,7 @@ export const handleBoardUpdate = (
 
     // Check if the move was legal
     // ------------------------------------------------------------------------------
-    const getPosition = (fen: string) => fen.split(" ")[0];
-    const boardPosition = getPosition(boardState.fen);
-    const currentGame = new Chess(gameFen);
-    const move = currentGame.moves().find((findMove) => {
-        const tempGame = new Chess(gameFen);
-        tempGame.move(findMove);
-        const movePosition = getPosition(tempGame.fen());
-        return movePosition === boardPosition;
-    });
-
+    const move = findMove(gameFen, boardState.fen);
     if (move === undefined) {
         const update: BoardUpdate = {
             isGameLegal: false,
