@@ -6,6 +6,16 @@ import { createBoardSimulator } from "./boardSimulator";
 import { createSerialPort } from "./createSerialPort";
 import { handleBoardUpdate } from "./handleBoardUpdate";
 
+// Important that this has a "null-like" initial state.
+// If it is initialized to the chess starting position,
+// the initial board state will never be sent, as it
+// is only sent if the live board state is different
+// from the previous board state
+const kInitialLiveBoardState: LiveBoardState = {
+    boardEncoded: new Uint8Array(0),
+    isGameLegal: false,
+} as const;
+
 export const setupBoard = async (
     simulateGame: boolean,
     pollInterval_ms: number,
@@ -35,10 +45,7 @@ export const setupBoard = async (
     const signal = new Signal<BoardMessage>();
     const game = new Chess();
 
-    let previousLiveState: LiveBoardState = {
-        boardEncoded: new Uint8Array(0),
-        isGameLegal: false,
-    };
+    let previousLiveState = kInitialLiveBoardState;
 
     const tick = () => {
         if (shouldTick) {

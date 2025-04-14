@@ -1,6 +1,5 @@
 import { Chess } from "chess.js";
 import type { BoardState, BoardMessage, DGTBoard, LiveBoardState, BoardUpdate } from "./api";
-import { kInitialAscii } from "./kInitialAscii";
 import { parseBoardMessage } from "./parseBoardMessage";
 import { arrayEqual } from "../lib/arrayEqual";
 
@@ -56,27 +55,6 @@ export const handleBoardUpdate = async (
     }
     const boardAscii = boardState.ascii;
     const boardEncoded = boardState.encoded;
-
-    // Check if the game has started
-    // ------------------------------------------------------------------------------
-    const isGameStart = boardAscii === kInitialAscii && game.history().length === 0;
-    if (isGameStart) {
-        const update: BoardUpdate = {
-            liveState: {
-                boardEncoded,
-                isGameLegal: true,
-            },
-            message: {
-                ok: true,
-                boardAscii,
-                boardEncoded,
-                isGameLegal: true,
-                ...gameState,
-                message: "",
-            },
-        };
-        return update;
-    }
 
     // Check if live state of the board has changed
     // ------------------------------------------------------------------------------
