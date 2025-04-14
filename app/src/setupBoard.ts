@@ -16,10 +16,10 @@ export const setupBoard = async (
 ): Promise<DGT | Error> => {
     let shouldTick = true;
     let previousBoardEncoded = new Uint8Array();
-    let shouldCheckMove = false;
+    let playerHasIndicatedMove = false;
     moveKeyPressedSignal.listen((color) => {
         if (color === game.turn()) {
-            shouldCheckMove = true;
+            playerHasIndicatedMove = true;
         }
     });
 
@@ -88,7 +88,11 @@ export const setupBoard = async (
         let newMovePgn: string;
         let message: string;
         let isGameLegal: boolean;
-        if (shouldCheckMove) {
+        if (playerHasIndicatedMove) {
+            // if the player has indicated a move, we *always* check it
+            // even if the board hasn't changed, as this would be an illegal move
+            playerHasIndicatedMove = false;
+
             const move = findMove(game.fen(), boardState.fen);
             if (move !== undefined) {
                 game.move(move);
@@ -102,9 +106,8 @@ export const setupBoard = async (
                     "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.";
                 isGameLegal = false;
             }
-            shouldCheckMove = false;
         } else {
-            // don't send board state when it hasn't changed
+            // when the player has not indicated a move, and the board has not changed, ignore
             const boardIsTheSame = arrayEqual(previousBoardEncoded, boardState.encoded);
             if (boardIsTheSame) {
                 return;
