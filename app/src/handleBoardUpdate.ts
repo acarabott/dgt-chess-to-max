@@ -2,6 +2,7 @@ import { Chess } from "chess.js";
 import type { BoardState, BoardMessage, DGTBoard, LiveBoardState, BoardUpdate } from "./api";
 import { kInitialAscii } from "./kInitialAscii";
 import { parseBoardMessage } from "./parseBoardMessage";
+import { arrayEqual } from "../lib/arrayEqual";
 
 type GameState = Pick<BoardMessage, "gameAscii" | "fen" | "pgn">;
 
@@ -28,6 +29,7 @@ export const handleBoardUpdate = async (
                         ok: false,
                         isGameLegal: false,
                         boardAscii: "",
+                        boardEncoded: new Uint8Array(),
                         message: "Could not read the board. Check the connection.",
                         ...gameState,
                     },
@@ -45,6 +47,7 @@ export const handleBoardUpdate = async (
                     isGameLegal: false,
                     message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${errorMessage}`,
                     boardAscii: "",
+                    boardEncoded: new Uint8Array(),
                     ...gameState,
                 },
             };
@@ -52,6 +55,7 @@ export const handleBoardUpdate = async (
         }
     }
     const boardAscii = boardState.ascii;
+    const boardEncoded = boardState.encoded;
 
     // Check if the game has started
     // ------------------------------------------------------------------------------
@@ -59,12 +63,13 @@ export const handleBoardUpdate = async (
     if (isGameStart) {
         const update: BoardUpdate = {
             liveState: {
-                boardAscii,
+                boardEncoded,
                 isGameLegal: true,
             },
             message: {
                 ok: true,
                 boardAscii,
+                boardEncoded,
                 isGameLegal: true,
                 ...gameState,
                 message: "",
@@ -75,8 +80,8 @@ export const handleBoardUpdate = async (
 
     // Check if live state of the board has changed
     // ------------------------------------------------------------------------------
-    const hasBoardChanged = boardAscii !== previousLiveState.boardAscii;
-    if (!hasBoardChanged) {
+    const boardHasNotChanged = arrayEqual(previousLiveState.boardEncoded, boardEncoded);
+    if (boardHasNotChanged) {
         const isGameLegal = boardAscii === gameState.gameAscii;
         const hasLegalChanged = isGameLegal !== previousLiveState.isGameLegal;
 
@@ -85,6 +90,7 @@ export const handleBoardUpdate = async (
             message = {
                 ok: true,
                 boardAscii,
+                boardEncoded,
                 isGameLegal,
                 message: "",
                 ...gameState,
@@ -94,7 +100,7 @@ export const handleBoardUpdate = async (
         const update: BoardUpdate = {
             message,
             liveState: {
-                boardAscii,
+                boardEncoded,
                 isGameLegal,
             },
         };
@@ -116,7 +122,7 @@ export const handleBoardUpdate = async (
     const isGameLegal = move !== undefined;
 
     const liveState: LiveBoardState = {
-        boardAscii,
+        boardEncoded,
         isGameLegal,
     };
 
@@ -127,6 +133,7 @@ export const handleBoardUpdate = async (
                 ok: true,
                 isGameLegal: false,
                 boardAscii,
+                boardEncoded,
                 message:
                     "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.",
                 ...gameState,
@@ -141,12 +148,13 @@ export const handleBoardUpdate = async (
 
     const update: BoardUpdate = {
         liveState: {
-            boardAscii,
+            boardEncoded,
             isGameLegal: true,
         },
         message: {
             ok: true,
             boardAscii,
+            boardEncoded,
             isGameLegal: true,
             ...gameState,
             message: "",

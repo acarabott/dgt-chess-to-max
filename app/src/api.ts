@@ -49,18 +49,20 @@ export enum MaxConnectionStatus {
 }
 
 export interface BoardState {
+    encoded: Uint8Array;
     fen: string;
     ascii: string;
 }
 
 export interface LiveBoardState {
-    boardAscii: string;
+    boardEncoded: Uint8Array;
     isGameLegal: boolean;
 }
 
 export interface BoardMessage {
     pgn: string;
     fen: string;
+    boardEncoded: Uint8Array;
     boardAscii: string;
     gameAscii: string;
     message: string;

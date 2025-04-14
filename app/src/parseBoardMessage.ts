@@ -68,5 +68,5 @@ export const parseBoardMessage = (message: Uint8Array): BoardState => {
     const fen = chess.fen();
     const ascii = chess.ascii();
 
-    return { fen, ascii };
+    return { fen, ascii, encoded };
 };

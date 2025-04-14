@@ -1,6 +1,7 @@
 {
     "include": [
         "app/src/**/*.ts",
+        "app/lib/**/*.ts",
         "app/dgt/**/*.ts",
         "./vite.config.ts",
         "./vitetest.config.ts",

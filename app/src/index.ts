@@ -35,6 +35,7 @@ const main = () => {
                 pgn: "",
                 fen: "",
                 boardAscii: "",
+                boardEncoded: new Uint8Array(),
                 gameAscii: "",
             });
         };
@@ -50,6 +51,7 @@ const main = () => {
                 pgn: "",
                 fen: "",
                 boardAscii: "",
+                boardEncoded: new Uint8Array(),
                 gameAscii: "",
             });
             return;

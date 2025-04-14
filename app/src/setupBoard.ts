@@ -36,7 +36,7 @@ export const setupBoard = async (
     const game = new Chess();
 
     let previousLiveState: LiveBoardState = {
-        boardAscii: "",
+        boardEncoded: new Uint8Array(0),
         isGameLegal: false,
     };
 
