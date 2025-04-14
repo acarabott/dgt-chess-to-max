@@ -1,21 +1,11 @@
 import type { Color, Chess } from "chess.js";
-import type { BoardMessage, BoardState, DGT, DGTBoard, LiveBoardState } from "./api";
+import type { BoardMessage, BoardState, DGT, DGTBoard } from "./api";
 import { Signal } from "./Signal";
 import { Board } from "../dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
 import { createSerialPort } from "./createSerialPort";
 import { handleBoardUpdate } from "./handleBoardUpdate";
 import { parseBoardMessage } from "./parseBoardMessage";
-
-// Important that this has a "null-like" initial state.
-// If it is initialized to the chess starting position,
-// the initial board state will never be sent, as it
-// is only sent if the live board state is different
-// from the previous board state
-const kInitialLiveBoardState: LiveBoardState = {
-    boardEncoded: new Uint8Array(0),
-    isGameLegal: false,
-} as const;
 
 export const setupBoard = async (
     game: Chess,
@@ -24,7 +14,7 @@ export const setupBoard = async (
     moveKeyPressedSignal: Signal<Color>,
 ): Promise<DGT | Error> => {
     let shouldTick = true;
-    let previousLiveState = kInitialLiveBoardState;
+    let previousBoardEncoded = new Uint8Array();
     let shouldCheckMove = false;
     moveKeyPressedSignal.listen((color) => {
         if (color === game.turn()) {
@@ -90,7 +80,7 @@ export const setupBoard = async (
             game.fen(),
             boardState,
             shouldCheckMove,
-            previousLiveState,
+            previousBoardEncoded,
         );
 
         if (update === undefined) {
@@ -111,8 +101,8 @@ export const setupBoard = async (
                 newMovePgn: update.result.move ?? "",
                 message: update.result.message,
                 isGameLegal: update.result.isGameLegal,
-                boardAscii: update.result.boardAscii,
-                boardEncoded: update.result.boardEncoded,
+                boardAscii: boardState.ascii,
+                boardEncoded: boardState.encoded,
                 fullPgn: game.pgn(),
                 gameAscii: game.ascii(),
                 fen: game.fen(),
@@ -120,9 +110,7 @@ export const setupBoard = async (
             boardSignal.notify(message);
         }
 
-        if (update.liveState !== undefined) {
-            previousLiveState = update.liveState;
-        }
+        previousBoardEncoded = boardState.encoded;
     };
 
     void tick();
