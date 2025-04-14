@@ -70,12 +70,6 @@ export interface BoardMessage {
     ok: boolean;
 }
 
-export interface BoardUpdate {
-    move: string | undefined;
-    isGameLegal: boolean;
-    message: string;
-}
-
 export interface Max {
     getConnectionStatus: () => MaxConnectionStatus;
     connectionStatusSignal: Signal<MaxConnectionStatus>;

@@ -4,8 +4,9 @@ import { Signal } from "./Signal";
 import { Board } from "../dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
 import { createSerialPort } from "./createSerialPort";
-import { handleBoardUpdate } from "./handleBoardUpdate";
 import { parseBoardMessage } from "./parseBoardMessage";
+import { arrayEqual } from "../lib/arrayEqual";
+import { findMove } from "./findMove";
 
 export const setupBoard = async (
     game: Chess,
@@ -45,10 +46,14 @@ export const setupBoard = async (
     await board.reset();
 
     const tick = async () => {
+        // schedule next tick as long as still connected
+        // ------------------------------------------------------------------------------
         if (shouldTick) {
             setTimeout(() => tick(), pollInterval_ms);
         }
 
+        // read the current state of the board
+        // ------------------------------------------------------------------------------
         let boardState: BoardState | undefined;
         let extraError = "";
         try {
@@ -60,6 +65,8 @@ export const setupBoard = async (
             extraError = error instanceof Error ? error.message : JSON.stringify(error);
         }
 
+        // report the error if we couldn't read the board state
+        // ------------------------------------------------------------------------------
         if (boardState === undefined) {
             const boardMessage: BoardMessage = {
                 ok: false,
@@ -76,37 +83,49 @@ export const setupBoard = async (
             return undefined;
         }
 
-        const update = handleBoardUpdate(
-            game.fen(),
-            boardState,
-            shouldCheckMove,
-            previousBoardEncoded,
-        );
+        // check if the board has changed, and whether the move was legal or not
+        // ------------------------------------------------------------------------------
+        let newMovePgn: string;
+        let message: string;
+        let isGameLegal: boolean;
+        if (shouldCheckMove) {
+            const move = findMove(game.fen(), boardState.fen);
+            if (move !== undefined) {
+                game.move(move);
 
-        if (update === undefined) {
-            return;
-        }
-
-        if (update.move !== undefined) {
-            game.move(update.move);
+                newMovePgn = move;
+                message = "";
+                isGameLegal = true;
+            } else {
+                newMovePgn = "";
+                message =
+                    "Could not generate PGN. Most likely because an illegal move, move the pieces to match the game position.";
+                isGameLegal = false;
+            }
             shouldCheckMove = false;
+        } else {
+            // don't send board state when it hasn't changed
+            const boardIsTheSame = arrayEqual(previousBoardEncoded, boardState.encoded);
+            if (boardIsTheSame) {
+                return;
+            }
+            newMovePgn = "";
+            message = "";
+            isGameLegal = true;
         }
 
-        if (!update.isGameLegal) {
-            shouldCheckMove = false;
-        }
-        const message: BoardMessage = {
+        const boardMessage: BoardMessage = {
             ok: true,
-            newMovePgn: update.move ?? "",
-            message: update.message,
-            isGameLegal: update.isGameLegal,
+            newMovePgn,
+            message,
+            isGameLegal,
             boardAscii: boardState.ascii,
             boardEncoded: boardState.encoded,
             fullPgn: game.pgn(),
             gameAscii: game.ascii(),
             fen: game.fen(),
         };
-        boardSignal.notify(message);
+        boardSignal.notify(boardMessage);
 
         previousBoardEncoded = boardState.encoded;
     };
