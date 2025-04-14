@@ -8,8 +8,9 @@ type GameState = Pick<BoardMessage, "gameAscii" | "fen" | "fullPgn">;
 export const handleBoardUpdate = async (
     game: Chess,
     board: DGTBoard,
+    shouldCheckMove: boolean,
     previousLiveState: LiveBoardState,
-): Promise<BoardUpdate> => {
+): Promise<BoardUpdate | undefined> => {
     const gameState: GameState = {
         gameAscii: game.ascii(),
         fullPgn: game.pgn(),
@@ -60,36 +61,31 @@ export const handleBoardUpdate = async (
 
     // Check if live state of the board has changed
     // ------------------------------------------------------------------------------
-    const boardHasNotChanged = arrayEqual(previousLiveState.boardEncoded, boardEncoded);
-    if (boardHasNotChanged) {
-        const isGameLegal = boardAscii === gameState.gameAscii;
-        const hasLegalChanged = isGameLegal !== previousLiveState.isGameLegal;
-       
-        let message: BoardMessage | undefined = undefined;
-        if (hasLegalChanged) {
-            message = {
-                ok: true,
-                boardAscii,
-                boardEncoded,
-                isGameLegal,
-                newMovePgn: "",
-                message: "",
-                ...gameState,
-            };
+
+    if (!shouldCheckMove) {
+        const boardHasChanged = !arrayEqual(previousLiveState.boardEncoded, boardEncoded);
+        if (!boardHasChanged) {
+            return undefined;
         }
 
+        const isGameLegal = true; // true because we should not be checking moves
         const update: BoardUpdate = {
-            message,
             liveState: {
                 boardEncoded,
                 isGameLegal,
             },
+            message: {
+                ok: true,
+                isGameLegal,
+                message: "",
+                boardAscii: boardState.ascii,
+                newMovePgn: "",
+                boardEncoded: boardState.encoded,
+                ...gameState,
+            },
         };
-
         return update;
     }
-
-    
 
     // Check if the move was legal
     // ------------------------------------------------------------------------------

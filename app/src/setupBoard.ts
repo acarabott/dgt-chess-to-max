@@ -1,3 +1,4 @@
+import type { Color } from "chess.js";
 import { Chess } from "chess.js";
 import type { BoardMessage, DGT, DGTBoard, LiveBoardState } from "./api";
 import { Signal } from "./Signal";
@@ -19,6 +20,7 @@ const kInitialLiveBoardState: LiveBoardState = {
 export const setupBoard = async (
     simulateGame: boolean,
     pollInterval_ms: number,
+    moveKeyPressedSignal: Signal<Color>,
     onDisconnect: () => void,
 ): Promise<DGT | Error> => {
     let shouldTick = true;
@@ -42,20 +44,34 @@ export const setupBoard = async (
 
     await board.reset();
 
-    const signal = new Signal<BoardMessage>();
+    const boardSignal = new Signal<BoardMessage>();
     const game = new Chess();
 
     let previousLiveState = kInitialLiveBoardState;
+    let shouldCheckMove = false;
+    moveKeyPressedSignal.listen((color) => {
+        if (color === game.turn()) {
+            shouldCheckMove = true;
+        }
+    });
 
     const tick = () => {
         if (shouldTick) {
             setTimeout(() => tick(), pollInterval_ms);
         }
 
-        void handleBoardUpdate(game, board, previousLiveState).then((update) => {
-            if (update.message !== undefined) {
-                signal.notify(update.message);
+        void handleBoardUpdate(game, board, shouldCheckMove, previousLiveState).then((update) => {
+            if (update === undefined) {
+                return;
             }
+
+            if (update.message !== undefined) {
+                if (update.message.newMovePgn !== "" || !update.message.isGameLegal) {
+                    shouldCheckMove = false;
+                }
+                boardSignal.notify(update.message);
+            }
+
             if (update.liveState !== undefined) {
                 previousLiveState = update.liveState;
             }
@@ -65,6 +81,6 @@ export const setupBoard = async (
     tick();
 
     return {
-        signal,
+        signal: boardSignal,
     };
 };
