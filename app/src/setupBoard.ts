@@ -18,21 +18,24 @@ const kInitialLiveBoardState: LiveBoardState = {
 } as const;
 
 export const setupBoard = async (
-    simulateGame: boolean,
+    simulateBoard: boolean,
     pollInterval_ms: number,
     moveKeyPressedSignal: Signal<Color>,
-    onDisconnect: () => void,
 ): Promise<DGT | Error> => {
+    const disconnectSignal = new Signal<void>();
+    const boardSignal = new Signal<BoardMessage>();
+    const game = new Chess();
+
     let shouldTick = true;
 
     let board: DGTBoard;
     {
-        if (simulateGame) {
+        if (simulateBoard) {
             board = createBoardSimulator();
         } else {
             const onSerialPortDisconnect = () => {
                 shouldTick = false;
-                onDisconnect();
+                disconnectSignal.notify();
             };
             const serialPortOrError = await createSerialPort(onSerialPortDisconnect);
             if (serialPortOrError instanceof Error) {
@@ -43,9 +46,6 @@ export const setupBoard = async (
     }
 
     await board.reset();
-
-    const boardSignal = new Signal<BoardMessage>();
-    const game = new Chess();
 
     let previousLiveState = kInitialLiveBoardState;
     let shouldCheckMove = false;
@@ -81,6 +81,7 @@ export const setupBoard = async (
     tick();
 
     return {
-        signal: boardSignal,
+        boardSignal,
+        disconnectSignal,
     };
 };

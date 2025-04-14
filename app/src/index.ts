@@ -28,11 +28,10 @@ TODO clean up file structure
 const main = () => {
     const max = setupMax(kMaxMiraChannel);
 
-    const moveKeySignal = setupKeyboard();
+    const moveKeyPressedSignal = setupKeyboard();
 
     const startAction: StartAction = async () => {
-        const onDisconnect = () => {
-            const message = "Board disconnected. Reconnect it!";
+        const handleError = (message: string) => {
             ui.addError(message);
             max.sendMessage({
                 ok: false,
@@ -47,30 +46,22 @@ const main = () => {
             });
         };
 
-        const dgtBoard = await setupBoard(false, kDGTPollInterval_ms, moveKeySignal, onDisconnect);
+        const dgtBoard = await setupBoard(false, kDGTPollInterval_ms, moveKeyPressedSignal);
         if (dgtBoard instanceof Error) {
-            const message = dgtBoard.message;
-            ui.addError(message);
-            max.sendMessage({
-                ok: false,
-                isGameLegal: false,
-                message: "Error setting up board, check the Web App",
-                fullPgn: "",
-                fen: "",
-                boardAscii: "",
-                boardEncoded: new Uint8Array(),
-                gameAscii: "",
-                newMovePgn: "",
-            });
+            handleError(dgtBoard.message);
             return;
         }
 
-        ui.hideStartButton();
-
-        dgtBoard.signal.listen((message) => {
+        dgtBoard.boardSignal.listen((message) => {
             ui.boardListener(message);
             max.sendMessage(message);
         });
+
+        dgtBoard.disconnectSignal.listen(() => {
+            handleError("Board disconnected. Reconnect it!");
+        });
+
+        ui.hideStartButton();
     };
 
     const ui = createUI(startAction);

@@ -83,7 +83,8 @@ export interface Max {
 }
 
 export interface DGT {
-    signal: Signal<BoardMessage>;
+    boardSignal: Signal<BoardMessage>;
+    disconnectSignal: Signal<void>;
 }
 
 export interface AppContext {
