@@ -96,7 +96,7 @@ export const setupBoard = async (
             shouldCheckMove = false;
         }
         const message: BoardMessage = {
-            ok: update.ok,
+            ok: true,
             newMovePgn: update.move ?? "",
             message: update.message,
             isGameLegal: update.isGameLegal,

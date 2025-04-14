@@ -20,7 +20,6 @@ export const handleBoardUpdate = (
         }
 
         const update: BoardUpdate = {
-            ok: true,
             isGameLegal: true, // true because we should not be checking moves
             message: "",
             move: undefined,
@@ -42,7 +41,6 @@ export const handleBoardUpdate = (
 
     if (move === undefined) {
         const update: BoardUpdate = {
-            ok: true,
             isGameLegal: false,
             move: undefined,
             message:
@@ -54,7 +52,6 @@ export const handleBoardUpdate = (
     // Make the move
     // ------------------------------------------------------------------------------
     const update: BoardUpdate = {
-        ok: true,
         move,
         isGameLegal: true,
         message: "",

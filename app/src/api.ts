@@ -71,7 +71,6 @@ export interface BoardMessage {
 }
 
 export interface BoardUpdate {
-    ok: boolean;
     move: string | undefined;
     isGameLegal: boolean;
     message: string;
