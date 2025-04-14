@@ -6,10 +6,8 @@ import type { StartAction } from "./api";
 import { setupKeyboard } from "./setupKeyboard";
 
 /*
-TODO keyboard handling, show window has focus
-
 TODO edge case: making illegal move by not moving anything
-TODO show error if board is not in correct initial position
+TODO show error if board is not in correct initial position?
 TODO show turn on screen
 TODO fix initial flash of illegal state (first move)
 TODO start game button?

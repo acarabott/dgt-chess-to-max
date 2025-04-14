@@ -205,6 +205,25 @@ export const createUI = (startAction: StartAction): UI => {
         }
     };
 
+    {
+        // window focus indicator
+        document.body.style.borderWidth = "20px";
+        document.body.style.borderStyle = "solid";
+        document.body.style.padding = "20px";
+        document.body.style.margin = "0px";
+
+        const updateFocus = (hasFocus: boolean) => {
+            document.body.style.borderColor = hasFocus ? "rgb(43, 212, 156)" : "rgb(212, 100, 100)";
+        };
+        updateFocus(true);
+        window.addEventListener("focus", () => {
+            updateFocus(true);
+        });
+        window.addEventListener("blur", () => {
+            updateFocus(false);
+        });
+    }
+
     return {
         el,
         addError,
