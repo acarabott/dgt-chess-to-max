@@ -69,15 +69,16 @@ export const setupBoard = async (
         // ------------------------------------------------------------------------------
         if (boardState === undefined) {
             const boardMessage: BoardMessage = {
-                ok: false,
-                newMovePgn: "",
-                message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${extraError}`,
-                isGameLegal: false,
                 boardAscii: "",
                 boardEncoded: new Uint8Array(),
-                fullPgn: game.pgn(),
+                boardFen: "",
                 gameAscii: game.ascii(),
                 gameFen: game.fen(),
+                gameFullPgn: game.pgn(),
+                isGameLegal: false,
+                message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${extraError}`,
+                newMovePgn: "",
+                ok: false,
             };
             boardSignal.notify(boardMessage);
             return undefined;
@@ -118,15 +119,16 @@ export const setupBoard = async (
         }
 
         const boardMessage: BoardMessage = {
-            ok: true,
-            newMovePgn,
-            message,
-            isGameLegal,
             boardAscii: boardState.ascii,
             boardEncoded: boardState.encoded,
-            fullPgn: game.pgn(),
+            boardFen: boardState.fen,
             gameAscii: game.ascii(),
             gameFen: game.fen(),
+            gameFullPgn: game.pgn(),
+            isGameLegal,
+            message,
+            newMovePgn,
+            ok: true,
         };
         boardSignal.notify(boardMessage);
 

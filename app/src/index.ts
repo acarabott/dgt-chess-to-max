@@ -35,15 +35,16 @@ const main = () => {
         const handleError = (message: string) => {
             ui.addError(message);
             max.sendMessage({
-                ok: false,
-                isGameLegal: false,
-                message,
-                fullPgn: "",
-                gameFen: "",
                 boardAscii: "",
                 boardEncoded: new Uint8Array(),
+                boardFen: "",
                 gameAscii: "",
+                gameFen: "",
+                gameFullPgn: "",
+                isGameLegal: false,
+                message,
                 newMovePgn: "",
+                ok: false,
             });
         };
 

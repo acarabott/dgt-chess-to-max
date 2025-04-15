@@ -59,14 +59,15 @@ export interface LiveBoardState {
 }
 
 export interface BoardMessage {
-    fullPgn: string;
-    newMovePgn: string;
-    gameFen: string;
-    boardEncoded: Uint8Array;
     boardAscii: string;
+    boardEncoded: Uint8Array;
+    boardFen: string;
+    gameFullPgn: string;
     gameAscii: string;
-    message: string;
+    gameFen: string;
     isGameLegal: boolean;
+    message: string;
+    newMovePgn: string;
     ok: boolean;
 }
 
