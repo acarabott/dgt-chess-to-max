@@ -2,7 +2,7 @@
 /* eslint no-labels: ["error", { "allowLoop": true }] */
 /* global TransformStream */
 
-import type { DGTBoard } from "../src/api";
+import type { DGTBoard } from "../../src/api";
 import { ReturnSerialNr, ReturnVersion, SendBoard, SendReset, SendUpdateBoard } from "./Command";
 import type { Command } from "./Command";
 
