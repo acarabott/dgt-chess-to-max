@@ -36,8 +36,6 @@ const parseDGTPiece = (piece: DGTChessPiece): Piece | undefined => {
     }
 };
 
-// TODO this could take the current PGN and initialize the game from that, would mean that FEN would have the correct turns
-
 /**
  * Parses a message from the DGT board and returns a FEN string representing the position on the board.
  * The message is expected to be a Uint8Array with the first 3 bytes being a header.

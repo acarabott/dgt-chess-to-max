@@ -7,20 +7,25 @@ import { setupKeyboard } from "./setupKeyboard";
 import { Chess } from "chess.js";
 
 /*
-TODO edge case: making illegal move by not moving anything
-TODO show error if board is not in correct initial position?
-TODO show turn on screen
-TODO fix initial flash of illegal state (first move)
-TODO start game button?
+TODO clean up file structure
+
+## Essential
 TODO web server startup
 TODO deploy to website
-TODO convert to Node?
+TODO run from node
+TODO compile with bun/deno
+
+## Polish
+TODO show turn on screen
 TODO make UI nice - chess UI library?
-TODO remove kInitialAscii?
+
+## Nice to have
+TODO parseBoardMessage could take the current PGN and initialize the game from that, would mean that FEN would have the correct turns
+TODO write tests
+TODO edge case: making illegal move by not moving anything
+TODO show error if board is not in correct initial position?
 TODO button to simulate game
 TODO return error codes, not messages, ui should own messages
-TODO write tests
-TODO clean up file structure
 
 */
 

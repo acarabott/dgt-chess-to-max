@@ -47,7 +47,7 @@ export class Board implements DGTBoard {
 
     async reset() {
         await this.message(new SendReset());
-        return true; // TODO
+        return true; // TODO check if message was sent succesfully
     }
 
     async message<T>(cmd: Command<T>) {
