@@ -232,3 +232,13 @@ export const createUI = (startAction: StartAction): UI => {
         maxConnectionListener,
     };
 };
+
+export const showUnsupportedUI = () => {
+    const style = document.body.style;
+    style.backgroundColor = "rgb(212, 100, 100)";
+    style.color = "black";
+    style.fontFamily = "Impact, sans-serif";
+    style.fontSize = "100px";
+    style.padding = "20px";
+    document.body.textContent = "This browser cannot connect to DGT boards. Use Google Chrome.";
+};

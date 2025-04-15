@@ -29,9 +29,7 @@
         "vitest": "^1.6.0"
     },
     "browserslist": [
-        "last 1 Chrome version",
-        "last 1 Safari version",
-        "last 1 Firefox version"
+        "fully supports web-serial"
     ],
     "dependencies": {
         "chess.js": "^1.1.0",

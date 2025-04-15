@@ -1,9 +1,13 @@
+export const isWebSerialSupport = (): boolean => {
+    return (navigator.serial as unknown) !== undefined;
+};
+
 export const createSerialPort = async (
     baudRate: number,
     filters: SerialPortFilter[],
     onDisconnect: () => void,
 ): Promise<SerialPort | Error> => {
-    if ((navigator.serial as unknown) === undefined) {
+    if (!isWebSerialSupport()) {
         return new Error("This browser does not support the Web Serial API, use Google Chrome.");
     }
 

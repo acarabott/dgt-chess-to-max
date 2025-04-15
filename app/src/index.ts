@@ -1,10 +1,11 @@
-import { createUI } from "./ui";
+import { createUI, showUnsupportedUI } from "./ui";
 import { setupMax } from "./max-communication";
 import { kDGTPollInterval_ms, kMaxMiraChannel } from "./constants";
 import { setupBoard } from "./setupBoard";
 import type { StartAction } from "./api";
 import { setupKeyboard } from "./setupKeyboard";
 import { Chess } from "chess.js";
+import { isWebSerialSupport } from "../lib/createSerialPort";
 
 /*
 ## Essential
@@ -28,6 +29,11 @@ TODO return error codes, not messages, ui should own messages
 */
 
 const main = () => {
+    if (!isWebSerialSupport()) {
+        showUnsupportedUI();
+        return;
+    }
+
     const game = new Chess();
 
     const max = setupMax(kMaxMiraChannel);
