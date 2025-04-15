@@ -22,6 +22,6 @@ export const createSerialPort = async (
         return serialPort;
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-        return new Error(`Could not open serial port: ${errorMessage}`);
+        return new Error(`Could not open serial port. Check no other browser tabs or applications are connected to it. ${errorMessage}`);
     }
 };
