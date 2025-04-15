@@ -1,4 +1,4 @@
-export const prettyPrint = (ascii: string) => {
+export const prettyPrintBoard = (ascii: string) => {
     const kSymbolLookup: Record<string, string> = {
         P: "♙",
         B: "♗",

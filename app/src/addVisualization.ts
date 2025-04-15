@@ -1,4 +1,4 @@
-import { prettyPrint } from "./prettyPrint";
+import { prettyPrintBoard } from "./prettyPrintBoard";
 
 export const addViz = (
     title: string,
@@ -14,7 +14,7 @@ export const addViz = (
 
     const vizEl = document.createElement("textarea");
     containerEl.appendChild(vizEl);
-    vizEl.value = `${prettyPrint(resultAscii)}\n\ntarget: ${targetFen}\nresult: ${resultFen}\n\n\n`;
+    vizEl.value = `${prettyPrintBoard(resultAscii)}\n\ntarget: ${targetFen}\nresult: ${resultFen}\n\n\n`;
 
     vizEl.readOnly = true;
     vizEl.rows = 14;

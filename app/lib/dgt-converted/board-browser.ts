@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 
-import type { DGTBoard } from "./api";
+import type { DGTBoard } from "../../src/api";
+import { DGTMessageCode } from "./board-api";
 import {
-    DGTMessageCode,
     kDGTMessageBufferLength,
     kDGTMessageLengthBoard,
     kDGTMessageLengthSerialNumber,
     kDGTMessageLengthVersion,
-} from "./api";
+} from "./board-constants";
 import { parseSerialNumberMessage, parseVersionMessage } from "./board-shared";
 
 const createTransformer = () => {
@@ -91,7 +91,7 @@ export class BoardBrowser implements DGTBoard {
 
     async write(messageCode: DGTMessageCode): Promise<boolean> {
         if ((this.port.writable as SerialPort["writable"] | null) === null) {
-            console.error("serial port is not writable")
+            console.error("serial port is not writable");
             return false;
         }
 

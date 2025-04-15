@@ -1,7 +1,7 @@
 import type { AddError, BoardMessage, Colors, StartAction, UI } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { kMaxMiraChannel } from "./constants";
-import { prettyPrint } from "./prettyPrint";
+import { prettyPrintBoard } from "./prettyPrintBoard";
 import type { Listener } from "../lib/Signal";
 
 export const createUI = (startAction: StartAction): UI => {
@@ -166,8 +166,8 @@ export const createUI = (startAction: StartAction): UI => {
     };
 
     const boardListener: Listener<BoardMessage> = (message) => {
-        liveBoardEl.value = prettyPrint(message.boardAscii);
-        previousLegalBoardEl.value = prettyPrint(message.gameAscii);
+        liveBoardEl.value = prettyPrintBoard(message.boardAscii);
+        previousLegalBoardEl.value = prettyPrintBoard(message.gameAscii);
 
         appendMaxMessage(message);
 
@@ -180,7 +180,7 @@ export const createUI = (startAction: StartAction): UI => {
                     return undefined;
                 }
                 const boardEl = document.createElement("pre");
-                boardEl.textContent = `${title}:\n ${prettyPrint(ascii)}`;
+                boardEl.textContent = `${title}:\n ${prettyPrintBoard(ascii)}`;
                 return boardEl;
             };
 

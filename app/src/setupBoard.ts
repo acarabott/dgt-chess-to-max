@@ -1,6 +1,6 @@
 import type { Color, Chess } from "chess.js";
 import { kDGTFilter } from "./api";
-import type { BoardMessage, BoardState, DGT, DGTBoard } from "./api";
+import type { BoardMessage, BoardState, BoardSignals, DGTBoard } from "./api";
 import { Signal } from "../lib/Signal";
 import { Board } from "../lib/dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
@@ -15,7 +15,7 @@ export const setupBoard = async (
     simulateBoard: boolean,
     pollInterval_ms: number,
     moveKeyPressedSignal: Signal<Color>,
-): Promise<DGT | Error> => {
+): Promise<BoardSignals | Error> => {
     let shouldTick = true;
     let previousBoardEncoded = new Uint8Array();
     let playerHasIndicatedMove = false;

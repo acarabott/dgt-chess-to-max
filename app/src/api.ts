@@ -24,21 +24,6 @@ export enum DGTChessPiece {
     BlackQueen = 0xc,
 }
 
-export enum DGTMessageCode {
-    SendReset = 0x40,
-    SendUpdateBoard = 0x44,
-    GetBoardState = 0x42,
-    GetSerialNumber = 0x45,
-    GetVersion = 0x4d,
-}
-
-export const kDGTMessageHeaderLength = 3;
-export const kDGTMessageLengthBoard = kDGTMessageHeaderLength + 64;
-export const kDGTMessageLengthSerialNumber = kDGTMessageHeaderLength + 5;
-export const kDGTMessageLengthVersion = kDGTMessageHeaderLength + 2;
-
-export const kDGTMessageBufferLength = 5;
-
 export enum MaxConnectionStatus {
     Init = "Init",
     Connecting = "Connecting",
@@ -52,10 +37,6 @@ export interface BoardState {
     encoded: Uint8Array;
     fen: string;
     ascii: string;
-}
-
-export interface LiveBoardState {
-    isGameLegal: boolean;
 }
 
 export interface BoardMessage {
@@ -77,14 +58,14 @@ export interface Max {
     sendMessage: (message: BoardMessage) => void;
 }
 
-export interface DGT {
+export interface BoardSignals {
     boardSignal: Signal<BoardMessage>;
     disconnectSignal: Signal<void>;
 }
 
 export interface AppContext {
     max: Max;
-    dgt: DGT;
+    dgt: BoardSignals;
 }
 
 export const kDGTFilter: SerialPortFilter = {

@@ -7,8 +7,6 @@ import { setupKeyboard } from "./setupKeyboard";
 import { Chess } from "chess.js";
 
 /*
-TODO clean up file structure
-
 ## Essential
 TODO web server startup
 TODO deploy to website

@@ -1,4 +1,4 @@
-import { kDGTMessageHeaderLength } from "./api";
+import { kDGTMessageHeaderLength } from "./board-constants";
 
 export const parseSerialNumberMessage = (message: Readonly<Uint8Array>) => {
     const decoder = new TextDecoder("utf-8");
