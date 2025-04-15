@@ -1,18 +1,19 @@
-import { kDGTFilter } from "./api";
-import { kDGTBaudRate } from "./constants";
-
-export const createSerialPort = async (onDisconnect: () => void): Promise<SerialPort | Error> => {
+export const createSerialPort = async (
+    baudRate: number,
+    filters: SerialPortFilter[],
+    onDisconnect: () => void,
+): Promise<SerialPort | Error> => {
     if ((navigator.serial as unknown) === undefined) {
         return new Error("This browser does not support the Web Serial API, use Google Chrome.");
     }
 
     try {
-        const serialPort = await navigator.serial.requestPort({ filters: [kDGTFilter] });
+        const serialPort = await navigator.serial.requestPort({ filters });
         serialPort.addEventListener("disconnect", (_event) => {
             onDisconnect();
         });
 
-        await serialPort.open({ baudRate: kDGTBaudRate });
+        await serialPort.open({ baudRate });
 
         return serialPort;
     } catch (error) {

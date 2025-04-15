@@ -1,12 +1,14 @@
 import type { Color, Chess } from "chess.js";
+import { kDGTFilter } from "./api";
 import type { BoardMessage, BoardState, DGT, DGTBoard } from "./api";
 import { Signal } from "../lib/Signal";
 import { Board } from "../lib/dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
-import { createSerialPort } from "./createSerialPort";
+import { createSerialPort } from "../lib/createSerialPort";
 import { parseBoardMessage } from "./parseBoardMessage";
 import { arrayEqual } from "../lib/arrayEqual";
 import { findMove } from "./findMove";
+import { kDGTBaudRate } from "./constants";
 
 export const setupBoard = async (
     game: Chess,
@@ -35,7 +37,11 @@ export const setupBoard = async (
                 shouldTick = false;
                 disconnectSignal.notify();
             };
-            const serialPortOrError = await createSerialPort(onSerialPortDisconnect);
+            const serialPortOrError = await createSerialPort(
+                kDGTBaudRate,
+                [kDGTFilter],
+                onSerialPortDisconnect,
+            );
             if (serialPortOrError instanceof Error) {
                 return serialPortOrError;
             }
