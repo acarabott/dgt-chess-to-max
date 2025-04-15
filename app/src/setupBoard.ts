@@ -77,7 +77,7 @@ export const setupBoard = async (
                 boardEncoded: new Uint8Array(),
                 fullPgn: game.pgn(),
                 gameAscii: game.ascii(),
-                fen: game.fen(),
+                gameFen: game.fen(),
             };
             boardSignal.notify(boardMessage);
             return undefined;
@@ -126,7 +126,7 @@ export const setupBoard = async (
             boardEncoded: boardState.encoded,
             fullPgn: game.pgn(),
             gameAscii: game.ascii(),
-            fen: game.fen(),
+            gameFen: game.fen(),
         };
         boardSignal.notify(boardMessage);
 

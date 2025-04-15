@@ -39,7 +39,7 @@ const main = () => {
                 isGameLegal: false,
                 message,
                 fullPgn: "",
-                fen: "",
+                gameFen: "",
                 boardAscii: "",
                 boardEncoded: new Uint8Array(),
                 gameAscii: "",
