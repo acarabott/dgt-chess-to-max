@@ -1,5 +1,5 @@
 import type { Color } from "chess.js";
-import { Signal } from "./Signal";
+import { Signal } from "../lib/Signal";
 
 export const setupKeyboard = () => {
     const moveKeySignal = new Signal<Color>();

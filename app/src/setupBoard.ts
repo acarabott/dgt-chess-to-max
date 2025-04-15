@@ -1,6 +1,6 @@
 import type { Color, Chess } from "chess.js";
 import type { BoardMessage, BoardState, DGT, DGTBoard } from "./api";
-import { Signal } from "./Signal";
+import { Signal } from "../lib/Signal";
 import { Board } from "../dgt/Board";
 import { createBoardSimulator } from "./boardSimulator";
 import { createSerialPort } from "./createSerialPort";

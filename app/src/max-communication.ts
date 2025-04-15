@@ -1,5 +1,5 @@
 import * as Xebra from "xebra.js";
-import { Signal } from "./Signal";
+import { Signal } from "../lib/Signal";
 import type { BoardMessage, Max } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { kMaxReconnectionInterval_ms } from "./constants";

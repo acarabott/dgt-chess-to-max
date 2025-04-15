@@ -2,7 +2,7 @@ import type { AddError, BoardMessage, Colors, StartAction, UI } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { kMaxMiraChannel } from "./constants";
 import { prettyPrint } from "./prettyPrint";
-import type { Listener } from "./Signal";
+import type { Listener } from "../lib/Signal";
 
 export const createUI = (startAction: StartAction): UI => {
     const el = document.createElement("div");
