@@ -10,7 +10,6 @@ import { isWebSerialSupport } from "../lib/createSerialPort";
 /*
 ## Essential
 TODO web server startup
-TODO deploy to website
 TODO run from node
 TODO compile with bun/deno
 
