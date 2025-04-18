@@ -134,7 +134,7 @@ export const createUI = (startAction: StartAction, moveInputSignal: Signal<Color
 
     const turnsEl = document.createElement("div");
     turnsEl.style.border = "1px solid black";
-    turnsEl.style.padding = "20px"
+    turnsEl.style.padding = "20px";
     boardsEl.appendChild(turnsEl);
 
     const turnEl = document.createElement("h2");
@@ -228,6 +228,7 @@ export const createUI = (startAction: StartAction, moveInputSignal: Signal<Color
                 break;
             case MaxConnectionStatus.Connecting:
                 connectionText = "Connecting";
+                colors = { bg: "rgb(100, 100, 100)", fg: "black" };
                 break;
             case MaxConnectionStatus.Connected:
                 connectionText = "Connected";
@@ -235,8 +236,10 @@ export const createUI = (startAction: StartAction, moveInputSignal: Signal<Color
                 break;
             case MaxConnectionStatus.ConnectionFailed:
                 connectionText = "Connection Failed";
+                colors = { bg: kRed, fg: "black" };
                 break;
             case MaxConnectionStatus.Reconnecting:
+                colors = { bg: "rgb(100, 100, 100)", fg: "black" };
                 connectionText = "Reconnecting";
                 break;
             case MaxConnectionStatus.Disconnected: {
