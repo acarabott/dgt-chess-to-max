@@ -2,10 +2,11 @@ import type { AddError, BoardMessage, Colors, StartAction, UI } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { kMaxMiraChannel } from "./constants";
 import { prettyPrintBoard, visualizeBoard } from "./prettyPrintBoard";
-import type { Listener } from "../lib/Signal";
+import type { Listener, Signal } from "../lib/Signal";
 import { kGreen, kRed } from "./colors";
+import type { Color } from "chess.js";
 
-export const createUI = (startAction: StartAction): UI => {
+export const createUI = (startAction: StartAction, moveInputSignal: Signal<Color>): UI => {
     const el = document.createElement("div");
     el.style.fontFamily = "sans-serif";
 
@@ -131,16 +132,50 @@ export const createUI = (startAction: StartAction): UI => {
     const gameBoardCmp = createBoardCmp("Legal Game");
     boardsEl.appendChild(gameBoardCmp.parentEl);
 
+    const turnsEl = document.createElement("div");
+    boardsEl.appendChild(turnsEl);
+
     const turnEl = document.createElement("h2");
     turnEl.style.marginTop = "0px";
     turnEl.textContent = "Turn: ";
-    boardsEl.appendChild(turnEl);
+    turnsEl.appendChild(turnEl);
 
     const turnTextEl = document.createElement("span");
     turnTextEl.style.padding = "10px";
     turnTextEl.style.border = "1px solid black";
     turnTextEl.textContent = "White";
     turnEl.appendChild(turnTextEl);
+
+    const turnButtonsEl = document.createElement("div");
+    turnButtonsEl.style.display = "flex";
+    turnButtonsEl.style.flexDirection = "column";
+    turnButtonsEl.style.gap = "200px";
+    turnButtonsEl.style.marginTop = "40px";
+
+    turnsEl.appendChild(turnButtonsEl);
+    const createTurnButton = (color: Color) => {
+        const turnButtonEl = document.createElement("button");
+        turnButtonEl.textContent = `${{ w: "White", b: "Black" }[color]} Move`;
+        turnButtonEl.style.border = "1px black solid";
+        turnButtonEl.style.backgroundColor = { w: "white", b: kGreen }[color];
+        turnButtonEl.style.width = "100%";
+        turnButtonEl.style.height = "100px";
+        turnButtonEl.style.cursor = "pointer";
+        turnButtonEl.style.outlineStyle = "solid";
+        turnButtonEl.style.outlineWidth = "4px";
+        turnButtonEl.style.outlineColor = "transparent";
+
+        turnButtonEl.addEventListener("click", () => {
+            moveInputSignal.notify(color);
+        });
+        return turnButtonEl;
+    };
+    const turnButtonBlack = createTurnButton("b");
+    turnButtonsEl.appendChild(turnButtonBlack);
+
+    const turnButtonWhite = createTurnButton("w");
+    turnButtonsEl.appendChild(turnButtonWhite);
+    turnButtonWhite.style.outlineColor = "black";
 
     const setLegalState = (isLegal: boolean, _message: string) => {
         liveBoardCmp.legalEl.style.visibility = isLegal ? "hidden" : "visible";
@@ -225,6 +260,14 @@ export const createUI = (startAction: StartAction): UI => {
 
         turnTextEl.textContent = message.turn === "w" ? "White" : "Black";
         turnTextEl.style.backgroundColor = message.turn === "w" ? "white" : kGreen;
+
+        if (message.turn === "w") {
+            turnButtonWhite.style.outlineColor = "black";
+            turnButtonBlack.style.outlineColor = "transparent";
+        } else {
+            turnButtonWhite.style.outlineColor = "transparent";
+            turnButtonBlack.style.outlineColor = "black";
+        }
 
         appendMaxMessage(message);
 

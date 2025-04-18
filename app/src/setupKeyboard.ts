@@ -1,23 +1,19 @@
 import type { Color } from "chess.js";
-import { Signal } from "../lib/Signal";
+import type { Signal } from "../lib/Signal";
 
-export const setupKeyboard = () => {
-    const moveKeySignal = new Signal<Color>();
-
+export const setupKeyboard = (moveInputSignal: Signal<Color>) => {
     window.addEventListener("keydown", (event) => {
         switch (event.code) {
             case "KeyW":
-                moveKeySignal.notify("w");
+                moveInputSignal.notify("w");
                 break;
 
             case "KeyB":
-                moveKeySignal.notify("b");
+                moveInputSignal.notify("b");
                 break;
 
             default:
                 break;
         }
     });
-
-    return moveKeySignal;
 };
