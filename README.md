@@ -95,6 +95,8 @@ Each message contains the following data:
     - More info, e.g. will describe the error when ok is 0
 - `isGameLegal` : `boolean`
     - Whether the board is currently in a legal position or not
+- `turn` : `string ("w" or "b)`
+    - The current turn: `"w"` for White, `"b"` for Black
 
 #### Board encoded
 
