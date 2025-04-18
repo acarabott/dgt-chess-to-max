@@ -55,7 +55,7 @@ export const setupBoard = async (
         // schedule next tick as long as still connected
         // ------------------------------------------------------------------------------
         if (shouldTick) {
-            setTimeout(() => tick(), pollInterval_ms);
+            setTimeout(() => void tick(), pollInterval_ms);
         }
 
         // read the current state of the board

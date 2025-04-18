@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
     root: "./app/",
+    base: "./",
     build: {
         emptyOutDir: true,
         outDir: "../build/",
