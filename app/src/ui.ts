@@ -133,10 +133,11 @@ export const createUI = (startAction: StartAction, moveInputSignal: Signal<Color
     boardsEl.appendChild(gameBoardCmp.parentEl);
 
     const turnsEl = document.createElement("div");
+    turnsEl.style.border = "1px solid black";
+    turnsEl.style.padding = "20px"
     boardsEl.appendChild(turnsEl);
 
     const turnEl = document.createElement("h2");
-    turnEl.style.marginTop = "0px";
     turnEl.textContent = "Turn: ";
     turnsEl.appendChild(turnEl);
 
