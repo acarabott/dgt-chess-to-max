@@ -6,7 +6,7 @@ export const createBoardSimulator = (): DGTBoard => {
 
     setInterval(() => {
         index = Math.min(index + 1, kTestSequence.length - 1);
-    }, 1000 * 3);
+    }, 1000 * 1);
 
     return {
         getBoardData: (): Promise<Uint8Array> => {

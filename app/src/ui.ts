@@ -1,8 +1,9 @@
 import type { AddError, BoardMessage, Colors, StartAction, UI } from "./api";
 import { MaxConnectionStatus } from "./api";
 import { kMaxMiraChannel } from "./constants";
-import { prettyPrintBoard } from "./prettyPrintBoard";
+import { prettyPrintBoard, visualizeBoard } from "./prettyPrintBoard";
 import type { Listener } from "../lib/Signal";
+import { kGreen, kRed } from "./colors";
 
 export const createUI = (startAction: StartAction): UI => {
     const el = document.createElement("div");
@@ -14,6 +15,10 @@ export const createUI = (startAction: StartAction): UI => {
     {
         el.appendChild(startEl);
         startEl.textContent = "Connect to DGT board";
+        startEl.style.width = "100px";
+        startEl.style.height = "100px";
+        startEl.style.cursor = "pointer";
+        startEl.style.marginBottom = "20px";
         startEl.addEventListener("click", () => {
             void startAction();
         });
@@ -29,11 +34,16 @@ export const createUI = (startAction: StartAction): UI => {
 
     {
         const errorContainerEl = document.createElement("div");
+        errorContainerEl.className = "error-container";
         el.appendChild(errorContainerEl);
-        errorContainerEl.style.backgroundColor = "red";
+        errorContainerEl.style.backgroundColor = kRed;
         errorContainerEl.style.fontFamily = "monospace";
+        errorContainerEl.style.padding = "20px";
+        errorContainerEl.style.display = "none";
+        errorContainerEl.style.marginBottom = "20px";
 
         const errorListEl = document.createElement("ul");
+        errorListEl.style.fontSize = "20px";
         errorContainerEl.appendChild(errorListEl);
 
         const clearErrorsEl = document.createElement("button");
@@ -41,8 +51,12 @@ export const createUI = (startAction: StartAction): UI => {
             errorContainerEl.appendChild(clearErrorsEl);
             clearErrorsEl.textContent = "Clear Errors";
             clearErrorsEl.style.display = "none";
+            clearErrorsEl.style.width = "80px";
+            clearErrorsEl.style.height = "80px";
+            clearErrorsEl.style.cursor = "pointer";
             clearErrorsEl.addEventListener("click", () => {
                 errorListEl.innerHTML = "";
+                errorContainerEl.style.display = "none";
                 clearErrorsEl.style.display = "none";
             });
         }
@@ -69,6 +83,7 @@ export const createUI = (startAction: StartAction): UI => {
                 li.appendChild(html);
             }
             errorListEl.prepend(li);
+            errorContainerEl.style.display = "block";
             clearErrorsEl.style.display = "block";
 
             showStartButton();
@@ -79,24 +94,36 @@ export const createUI = (startAction: StartAction): UI => {
         const parentEl = document.createElement("div");
         parentEl.style.border = "1px black solid";
         parentEl.style.padding = "20px";
+        parentEl.style.width = "400px";
 
         const titleEl = document.createElement("h2");
         titleEl.textContent = title;
+        titleEl.style.marginTop = "0";
         parentEl.appendChild(titleEl);
 
-        const boardEl = document.createElement("pre");
+        const legalEl = document.createElement("span");
+        legalEl.textContent = "Illegal move, reset";
+        legalEl.style.marginLeft = "20px";
+        legalEl.style.padding = "0 20px";
+        legalEl.style.fontSize = "20px";
+        legalEl.style.width = "100%";
+        legalEl.style.height = "20px";
+        legalEl.style.visibility = "hidden";
+        titleEl.appendChild(legalEl);
+
+        const boardEl = document.createElement("div");
         parentEl.appendChild(boardEl);
 
-        boardEl.style.fontFamily = "monospace";
-        boardEl.style.fontSize = "30px";
-
-        return { parentEl, boardEl };
+        return { parentEl, titleEl, legalEl, boardEl };
     };
 
     const boardsEl = document.createElement("div");
     el.appendChild(boardsEl);
+    boardsEl.className = "boardsEl";
     boardsEl.style.display = "flex";
     boardsEl.style.flexDirection = "row";
+    boardsEl.style.flexWrap = "wrap";
+    boardsEl.style.gap = "50px";
 
     const liveBoardCmp = createBoardCmp("Live Board");
     boardsEl.appendChild(liveBoardCmp.parentEl);
@@ -104,14 +131,9 @@ export const createUI = (startAction: StartAction): UI => {
     const gameBoardCmp = createBoardCmp("Legal Game");
     boardsEl.appendChild(gameBoardCmp.parentEl);
 
-    const legalEl = document.createElement("div");
-    el.appendChild(legalEl);
-    legalEl.style.background = "red";
-    legalEl.style.color = "white";
-
-    const setLegalState = (isLegal: boolean, message: string) => {
-        legalEl.textContent = message;
-        legalEl.style.display = isLegal ? "none" : "block";
+    const setLegalState = (isLegal: boolean, _message: string) => {
+        liveBoardCmp.legalEl.style.visibility = isLegal ? "hidden" : "visible";
+        liveBoardCmp.parentEl.style.backgroundColor = isLegal ? "transparent" : kRed;
     };
     setLegalState(true, "");
 
@@ -119,10 +141,12 @@ export const createUI = (startAction: StartAction): UI => {
     el.appendChild(maxEl);
     maxEl.style.border = "1px black solid";
     maxEl.style.padding = "20px";
+    maxEl.style.marginTop = "10px";
 
     const maxTitleEl = document.createElement("h2");
     maxTitleEl.textContent = "Max";
     maxTitleEl.style.padding = "10px";
+    maxTitleEl.style.marginTop = "0px";
     maxEl.appendChild(maxTitleEl);
 
     const maxConnectionEl = document.createElement("span");
@@ -132,6 +156,7 @@ export const createUI = (startAction: StartAction): UI => {
     maxEl.appendChild(maxMessageEl);
     maxMessageEl.rows = 20;
     maxMessageEl.cols = 80;
+    maxMessageEl.style.width = "100%";
     maxMessageEl.style.textWrapMode = "nowrap";
 
     const maxMessageHistory: string[] = [];
@@ -159,7 +184,7 @@ export const createUI = (startAction: StartAction): UI => {
                 break;
             case MaxConnectionStatus.Connected:
                 connectionText = "Connected";
-                colors = { bg: "green", fg: "white" };
+                colors = { bg: kGreen, fg: "white" };
                 break;
             case MaxConnectionStatus.ConnectionFailed:
                 connectionText = "Connection Failed";
@@ -171,7 +196,7 @@ export const createUI = (startAction: StartAction): UI => {
                 const text = `Max disconnected. Restart the patch and make sure there is a mira.frame object and a mira.channel object with the name ${kMaxMiraChannel}`;
                 addError(text);
                 connectionText = text;
-                colors = { bg: "red", fg: "black" };
+                colors = { bg: kRed, fg: "black" };
                 break;
             }
         }
@@ -182,8 +207,10 @@ export const createUI = (startAction: StartAction): UI => {
     };
 
     const boardListener: Listener<BoardMessage> = (message) => {
-        liveBoardCmp.boardEl.textContent = prettyPrintBoard(message.boardAscii);
-        gameBoardCmp.boardEl.textContent = prettyPrintBoard(message.gameAscii);
+        liveBoardCmp.boardEl.innerHTML = "";
+        liveBoardCmp.boardEl.appendChild(visualizeBoard(message.boardAscii));
+        gameBoardCmp.boardEl.innerHTML = "";
+        gameBoardCmp.boardEl.appendChild(visualizeBoard(message.gameAscii));
 
         appendMaxMessage(message);
 
@@ -223,13 +250,25 @@ export const createUI = (startAction: StartAction): UI => {
 
     {
         // window focus indicator
-        document.body.style.borderWidth = "20px";
+        document.body.style.borderWidth = "40px";
         document.body.style.borderStyle = "solid";
         document.body.style.padding = "20px";
         document.body.style.margin = "0px";
 
+        const focusEl = document.createElement("div");
+        focusEl.style.position = "fixed";
+        focusEl.textContent = "Window does not have focus, keyboard will not work";
+        focusEl.style.left = "0px";
+        focusEl.style.top = "0px";
+        focusEl.style.width = "100%";
+        focusEl.style.textAlign = "center";
+        focusEl.style.fontSize = "30px";
+        focusEl.style.fontFamily = "sans-serif";
+        document.body.appendChild(focusEl);
+
         const updateFocus = (hasFocus: boolean) => {
-            document.body.style.borderColor = hasFocus ? "rgb(43, 212, 156)" : "rgb(212, 100, 100)";
+            focusEl.style.display = hasFocus ? "none" : "block";
+            document.body.style.borderColor = hasFocus ? kGreen : kRed;
         };
         updateFocus(true);
         window.addEventListener("focus", () => {
@@ -251,7 +290,7 @@ export const createUI = (startAction: StartAction): UI => {
 
 export const showUnsupportedUI = () => {
     const style = document.body.style;
-    style.backgroundColor = "rgb(212, 100, 100)";
+    style.backgroundColor = kRed;
     style.color = "black";
     style.fontFamily = "Impact, sans-serif";
     style.fontSize = "100px";
