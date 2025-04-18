@@ -6,6 +6,7 @@ import type { Listener } from "../lib/Signal";
 
 export const createUI = (startAction: StartAction): UI => {
     const el = document.createElement("div");
+    el.style.fontFamily = "sans-serif";
 
     let addError: AddError;
 
@@ -74,18 +75,34 @@ export const createUI = (startAction: StartAction): UI => {
         };
     }
 
-    const createBoardEl = (fontSize: string) => {
-        const boardEl = document.createElement("textarea");
-        boardEl.readOnly = true;
-        boardEl.rows = 10;
-        boardEl.cols = 30;
+    const createBoardCmp = (title: string) => {
+        const parentEl = document.createElement("div");
+        parentEl.style.border = "1px black solid";
+        parentEl.style.padding = "20px";
+
+        const titleEl = document.createElement("h2");
+        titleEl.textContent = title;
+        parentEl.appendChild(titleEl);
+
+        const boardEl = document.createElement("pre");
+        parentEl.appendChild(boardEl);
+
         boardEl.style.fontFamily = "monospace";
-        boardEl.style.fontSize = fontSize;
-        return boardEl;
+        boardEl.style.fontSize = "30px";
+
+        return { parentEl, boardEl };
     };
 
-    const liveBoardEl = createBoardEl("30px");
-    el.appendChild(liveBoardEl);
+    const boardsEl = document.createElement("div");
+    el.appendChild(boardsEl);
+    boardsEl.style.display = "flex";
+    boardsEl.style.flexDirection = "row";
+
+    const liveBoardCmp = createBoardCmp("Live Board");
+    boardsEl.appendChild(liveBoardCmp.parentEl);
+
+    const gameBoardCmp = createBoardCmp("Legal Game");
+    boardsEl.appendChild(gameBoardCmp.parentEl);
 
     const legalEl = document.createElement("div");
     el.appendChild(legalEl);
@@ -98,19 +115,18 @@ export const createUI = (startAction: StartAction): UI => {
     };
     setLegalState(true, "");
 
-    const previousLegalBoardEl = createBoardEl("20px");
-    el.appendChild(previousLegalBoardEl);
-
     const maxEl = document.createElement("div");
     el.appendChild(maxEl);
     maxEl.style.border = "1px black solid";
+    maxEl.style.padding = "20px";
 
     const maxTitleEl = document.createElement("h2");
     maxTitleEl.textContent = "Max";
+    maxTitleEl.style.padding = "10px";
     maxEl.appendChild(maxTitleEl);
 
-    const maxConnectionEl = document.createElement("div");
-    maxEl.appendChild(maxConnectionEl);
+    const maxConnectionEl = document.createElement("span");
+    maxTitleEl.appendChild(maxConnectionEl);
 
     const maxMessageEl = document.createElement("textarea");
     maxEl.appendChild(maxMessageEl);
@@ -136,20 +152,20 @@ export const createUI = (startAction: StartAction): UI => {
         let colors: Colors | undefined;
         switch (status) {
             case MaxConnectionStatus.Init:
-                connectionText = "Max: Initialized";
+                connectionText = "Initialized";
                 break;
             case MaxConnectionStatus.Connecting:
-                connectionText = "Max: Connecting";
+                connectionText = "Connecting";
                 break;
             case MaxConnectionStatus.Connected:
-                connectionText = "Max: Connected";
+                connectionText = "Connected";
                 colors = { bg: "green", fg: "white" };
                 break;
             case MaxConnectionStatus.ConnectionFailed:
-                connectionText = "Max: Connection Failed";
+                connectionText = "Connection Failed";
                 break;
             case MaxConnectionStatus.Reconnecting:
-                connectionText = "Max: Reconnecting";
+                connectionText = "Reconnecting";
                 break;
             case MaxConnectionStatus.Disconnected: {
                 const text = `Max disconnected. Restart the patch and make sure there is a mira.frame object and a mira.channel object with the name ${kMaxMiraChannel}`;
@@ -159,15 +175,15 @@ export const createUI = (startAction: StartAction): UI => {
                 break;
             }
         }
-        maxConnectionEl.textContent = connectionText;
+        maxConnectionEl.textContent = `: ${connectionText}`;
         colors ??= { bg: "transparent", fg: "black" };
-        maxConnectionEl.style.backgroundColor = colors.bg;
-        maxConnectionEl.style.color = colors.fg;
+        maxTitleEl.style.backgroundColor = colors.bg;
+        maxTitleEl.style.color = colors.fg;
     };
 
     const boardListener: Listener<BoardMessage> = (message) => {
-        liveBoardEl.value = prettyPrintBoard(message.boardAscii);
-        previousLegalBoardEl.value = prettyPrintBoard(message.gameAscii);
+        liveBoardCmp.boardEl.textContent = prettyPrintBoard(message.boardAscii);
+        gameBoardCmp.boardEl.textContent = prettyPrintBoard(message.gameAscii);
 
         appendMaxMessage(message);
 
