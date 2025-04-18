@@ -1,3 +1,4 @@
+import type { Color } from "chess.js";
 import type { Listener, Signal } from "../lib/Signal";
 
 export interface DGTBoard {
@@ -50,6 +51,7 @@ export interface BoardMessage {
     message: string;
     newMovePgn: string;
     ok: boolean;
+    turn: Color;
 }
 
 export interface Max {

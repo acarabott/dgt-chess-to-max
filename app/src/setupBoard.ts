@@ -84,6 +84,7 @@ export const setupBoard = async (
                 isGameLegal: false,
                 message: `Error reading the board. Try turning it off, reconnecting, and refreshing the page. ${extraError}`,
                 newMovePgn: "",
+                turn: "w",
                 ok: false,
             };
             boardSignal.notify(boardMessage);
@@ -134,6 +135,7 @@ export const setupBoard = async (
             isGameLegal,
             message,
             newMovePgn,
+            turn: game.turn(),
             ok: true,
         };
         boardSignal.notify(boardMessage);

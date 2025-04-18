@@ -131,6 +131,17 @@ export const createUI = (startAction: StartAction): UI => {
     const gameBoardCmp = createBoardCmp("Legal Game");
     boardsEl.appendChild(gameBoardCmp.parentEl);
 
+    const turnEl = document.createElement("h2");
+    turnEl.style.marginTop = "0px";
+    turnEl.textContent = "Turn: ";
+    boardsEl.appendChild(turnEl);
+
+    const turnTextEl = document.createElement("span");
+    turnTextEl.style.padding = "10px";
+    turnTextEl.style.border = "1px solid black";
+    turnTextEl.textContent = "White";
+    turnEl.appendChild(turnTextEl);
+
     const setLegalState = (isLegal: boolean, _message: string) => {
         liveBoardCmp.legalEl.style.visibility = isLegal ? "hidden" : "visible";
         liveBoardCmp.parentEl.style.backgroundColor = isLegal ? "transparent" : kRed;
@@ -211,6 +222,9 @@ export const createUI = (startAction: StartAction): UI => {
         liveBoardCmp.boardEl.appendChild(visualizeBoard(message.boardAscii));
         gameBoardCmp.boardEl.innerHTML = "";
         gameBoardCmp.boardEl.appendChild(visualizeBoard(message.gameAscii));
+
+        turnTextEl.textContent = message.turn === "w" ? "White" : "Black";
+        turnTextEl.style.backgroundColor = message.turn === "w" ? "white" : kGreen;
 
         appendMaxMessage(message);
 
