@@ -1,7 +1,7 @@
 {
     "name": "chess",
     "version": "1.0.0",
-    "description": "",
+    "description": "DGT Board to Max Communication",
     "main": "main.js",
     "type": "module",
     "scripts": {
