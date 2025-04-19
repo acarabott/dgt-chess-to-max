@@ -1,5 +1,10 @@
 import { platform } from "process";
 import { app, BrowserWindow } from "electron";
+import url, { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -47,9 +52,13 @@ function createWindow() {
         return false;
     });
 
-    mainWindow.loadFile("build/index.html");
-
-    mainWindow.webContents.openDevTools();
+    mainWindow.loadURL(
+        url.format({
+            pathname: path.join(__dirname, "build/index.html"),
+            protocol: "file:",
+            slashes: true,
+        }),
+    );
 }
 
 app.whenReady().then(() => {
