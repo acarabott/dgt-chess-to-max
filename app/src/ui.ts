@@ -21,16 +21,31 @@ export const createUI = (startAction: StartAction, moveInputSignal: Signal<Color
         startEl.style.cursor = "pointer";
         startEl.style.marginBottom = "20px";
         startEl.addEventListener("click", () => {
-            void startAction();
+            void startAction(false);
+        });
+    }
+
+    const simulateEl = document.createElement("button");
+    {
+        el.appendChild(simulateEl);
+        simulateEl.textContent = "Simulate game";
+        simulateEl.style.width = "100px";
+        simulateEl.style.height = "100px";
+        simulateEl.style.cursor = "pointer";
+        simulateEl.style.margin = "20px";
+        simulateEl.addEventListener("click", () => {
+            void startAction(true);
         });
     }
 
     const hideStartButton = () => {
         startEl.style.display = "none";
+        simulateEl.style.display = "none";
     };
 
     const showStartButton = () => {
         startEl.style.display = "block";
+        simulateEl.style.display = "block";
     };
 
     {

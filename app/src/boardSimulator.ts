@@ -1,12 +1,29 @@
+import type { Chess, Color } from "chess.js";
 import type { DGTBoard } from "./api";
 import { kTestSequence } from "./testSequence";
+import type { Signal } from "../lib/Signal";
 
-export const createBoardSimulator = (): DGTBoard => {
+export const createBoardSimulator = (
+    game: Chess,
+    moveKeyPressedSignal: Signal<Color>,
+): DGTBoard => {
     let index = 0;
 
-    setInterval(() => {
+    const moveTime_s = 5;
+
+    const tick = () => {
         index = Math.min(index + 1, kTestSequence.length - 1);
-    }, 1000 * 1);
+        setTimeout(
+            () => {
+                moveKeyPressedSignal.notify(game.turn());
+            },
+            1000 * moveTime_s * 0.5,
+        );
+        setTimeout(() => {
+            tick();
+        }, 1000 * moveTime_s);
+    };
+    tick();
 
     return {
         getBoardData: (): Promise<Uint8Array> => {

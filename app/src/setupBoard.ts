@@ -31,7 +31,7 @@ export const setupBoard = async (
     let board: DGTBoard;
     {
         if (simulateBoard) {
-            board = createBoardSimulator();
+            board = createBoardSimulator(game, moveKeyPressedSignal);
         } else {
             const onSerialPortDisconnect = () => {
                 shouldTick = false;

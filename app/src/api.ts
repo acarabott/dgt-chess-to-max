@@ -75,7 +75,7 @@ export const kDGTFilter: SerialPortFilter = {
     usbProductId: 10,
 };
 
-export type StartAction = () => void | Promise<void>;
+export type StartAction = (simulate: boolean) => void | Promise<void>;
 export interface Colors {
     bg: string;
     fg: string;

@@ -19,8 +19,6 @@ TODO button to simulate game
 TODO return error codes, not messages, ui should own messages
 */
 
-const kSimulateGame = false;
-
 const main = () => {
     if (!isWebSerialSupport()) {
         showUnsupportedUI();
@@ -35,7 +33,7 @@ const main = () => {
 
     setupKeyboard(moveInputSignal);
 
-    const startAction: StartAction = async () => {
+    const startAction: StartAction = async (simulate: boolean) => {
         const handleError = (message: string) => {
             ui.addError(message);
             max.sendMessage({
@@ -53,12 +51,7 @@ const main = () => {
             });
         };
 
-        const dgtBoard = await setupBoard(
-            game,
-            kSimulateGame,
-            kDGTPollInterval_ms,
-            moveInputSignal,
-        );
+        const dgtBoard = await setupBoard(game, simulate, kDGTPollInterval_ms, moveInputSignal);
         if (dgtBoard instanceof Error) {
             handleError(dgtBoard.message);
             return;
@@ -75,11 +68,6 @@ const main = () => {
 
         ui.hideStartButton();
     };
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (kSimulateGame) {
-        void startAction();
-    }
 
     const ui = createUI(startAction, moveInputSignal);
     max.connectionStatusSignal.listen(ui.maxConnectionListener);
